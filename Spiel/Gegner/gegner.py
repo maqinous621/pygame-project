@@ -92,3 +92,7 @@ class Gegner:
             self.screen.blit(self.herzen[2], (self.x + 37,self.y-70))
         if self.leben <= 4:
             self.screen.blit(self.herzen[2], (self.x + 99,self.y-70))
+        
+
+
+        
