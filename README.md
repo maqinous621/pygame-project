@@ -1,2 +1,2 @@
 # pygame-project
-Git test
+Unser cooles Q4 Projekt - Schatzsuche Spiel :)
