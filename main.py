@@ -3,19 +3,19 @@ import sys
 
 pygame.init()
 
-# --- Fenster ---
+# Fenster
 breite, hoehe = 800, 600
 screen = pygame.display.set_mode((breite, hoehe))
 pygame.display.set_caption("Schatzsuche in der verlassenen Stadt")
 clock = pygame.time.Clock()
 
-# --- Farben ---
+# Farben
 weiss = (255, 255, 255)
 schwarz = (0, 0, 0)
 braun = (139, 69, 19)
 hellbraun = (205, 133, 63)
 
-# --- Schriftarten ---
+# Schriftarten
 titel_font = pygame.font.SysFont("arial", 48)
 button_font = pygame.font.SysFont("arial", 32)
 
@@ -53,11 +53,11 @@ def hauptmenu():
     start_button = Button("Spiel starten", 300, 250, 200, 50)
     beenden_button = Button("Beenden", 300, 320, 200, 50)
 
-    while True:
+    while True: # immer wahr
         # Hintergrund
         screen.fill((60, 60, 60))
 
-        # Titel anzeigen
+        # Titel
         titel = titel_font.render("Schatzsuche", True, weiss)
         screen.blit(titel, titel.get_rect(center=(breite // 2, 120)))
 
@@ -76,7 +76,7 @@ def hauptmenu():
 
             if beenden_button.wurde_geklickt(event):
                 pygame.quit()
-                sys.exit()
+                sys.exit() # beenden einfach
 
         pygame.display.update()
         clock.tick(60)
