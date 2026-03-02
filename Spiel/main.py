@@ -5,7 +5,7 @@ pygame.init()
 
 # Fenster
 breite, hoehe = 800, 600
-screen = pygame.display.set_mode((breite, hoehe))
+screen = pygame.display.set_mode((1920, 1080), pygame.SCALED | pygame.FULLSCREEN)
 pygame.display.set_caption("Schatzsuche in der verlassenen Stadt")
 clock = pygame.time.Clock()
 
