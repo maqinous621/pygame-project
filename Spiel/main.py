@@ -1,27 +1,27 @@
 import pygame
 import sys
+import map  # map.py wird importiert
 
 pygame.init()
 
-# Fenster
-breite, hoehe = 800, 600
+# fenster 1920x1080 (vollbild)
 screen = pygame.display.set_mode((1920, 1080), pygame.SCALED | pygame.FULLSCREEN)
 pygame.display.set_caption("Schatzsuche in der verlassenen Stadt")
 clock = pygame.time.Clock()
 
-# Farben
+# farben
 weiss = (255, 255, 255)
 schwarz = (0, 0, 0)
 braun = (139, 69, 19)
 hellbraun = (205, 133, 63)
 
-# Schriftarten
+# schriftarten
 titel_font = pygame.font.SysFont("arial", 48)
 button_font = pygame.font.SysFont("arial", 32)
 
 
 class Button:
-    # Ein einfacher Button mit Hover-Effekt (Farbe ändert sich wenn Maus drüber ist)
+    # einfacher Button mit Hover-Effekt
 
     def __init__(self, text, x, y, breite, hoehe):
         self.text = text
@@ -31,12 +31,8 @@ class Button:
         # Farbe wechseln wenn Maus über dem Button ist
         maus_pos = pygame.mouse.get_pos()
         farbe = hellbraun if self.rect.collidepoint(maus_pos) else braun
-
-        # Button-Rechteck und Rahmen zeichnen
         pygame.draw.rect(screen, farbe, self.rect)
         pygame.draw.rect(screen, schwarz, self.rect, 2)
-
-        # Text zentriert auf dem Button anzeigen
         text_surface = button_font.render(self.text, True, weiss)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
@@ -50,33 +46,34 @@ class Button:
 
 
 def hauptmenu():
-    start_button = Button("Spiel starten", 300, 250, 200, 50)
-    beenden_button = Button("Beenden", 300, 320, 200, 50)
+    # Buttons zentriert auf 1920x1080
+    start_button   = Button("Spiel starten", 760, 480, 400, 70)
+    beenden_button = Button("Beenden",        760, 580, 400, 70)
 
-    while True: # immer wahr
-        # Hintergrund
+    while True:
         screen.fill((60, 60, 60))
 
         # Titel
         titel = titel_font.render("Schatzsuche", True, weiss)
-        screen.blit(titel, titel.get_rect(center=(breite // 2, 120)))
+        untertitel = titel_font.render("in der verlassenen Stadt", True, weiss)
+        screen.blit(titel,     titel.get_rect(center=(960, 280)))
+        screen.blit(untertitel, untertitel.get_rect(center=(960, 350)))
 
         # Buttons zeichnen
         start_button.zeichnen(screen)
         beenden_button.zeichnen(screen)
 
-        # Events verarbeiten
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
             if start_button.wurde_geklickt(event):
-                print("Spiel starten!")  # Hier später zur Fortschritts-Map wechseln
+                map.main(screen)  # → Fortschritts-Map starten
 
             if beenden_button.wurde_geklickt(event):
                 pygame.quit()
-                sys.exit() # beenden einfach
+                sys.exit()
 
         pygame.display.update()
         clock.tick(60)

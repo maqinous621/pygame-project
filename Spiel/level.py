@@ -2,41 +2,38 @@ import pygame
 import sys
 from Figur.spielfigur import Spielfigur, Gegner
 
-# Bildschirmgröße (muss mit main.py übereinstimmen)
+# fenstergröße
 breite = 1920
 hoehe = 1080
 
-# Farben
+# farben
 schwarz = (0, 0, 0)
 weiss = (255, 255, 255)
 rot = (200, 50, 50)
 gruen = (50, 200, 50)
 grau = (100, 100, 100)
 
-# Boden-Y-Position (wo die Figuren stehen)
+# boden-y-position (da wo die Figuren stehen)
 boden_y = 780
 
-# --- Plattform-Klasse ---
 class Plattform:
-    # Eine Plattform auf der die Figur stehen kann
-
+    # Plattform auf der Figur stehen kann
     def __init__(self, x, y, breite, hoehe, farbe=(80, 50, 20)):
         self.rect = pygame.Rect(x, y, breite, hoehe)
         self.farbe = farbe
 
     def zeichnen(self, screen):
         pygame.draw.rect(screen, self.farbe, self.rect)
-        pygame.draw.rect(screen, schwarz, self.rect, 2)  # dünner Rahmen
+        pygame.draw.rect(screen, schwarz, self.rect, 2)  # dünner Rahmen wie bei
 
 
-# --- Level-Daten: Hintergrund + Plattformen + Gegner pro Level ---
-# Hier kannst du für jedes Level eigene Hintergründe und Plattformen festlegen!
+# level-Daten - Hintergrund + Plattformen + gegner pro level
 def level_daten_laden(level_nr):
 
-    # Zombie-Animationen laden (für alle Level gleich)
+    # zombie-Animationen
     zombie_lauf = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Run{i}.png").convert_alpha() for i in range(1, 11)]
 
-    # Hintergründe: je nach Level-Nummer ein anderes Bild
+    # hintergründe
     hintergrund_pfade = {
         0: "Spiel/Hintergründe/2/background.png",
         1: "Spiel/Hintergründe/3/background.png",
@@ -48,46 +45,46 @@ def level_daten_laden(level_nr):
         7: "Spiel/Hintergründe/3/background.png",  # Boss
     }
 
-    # Plattformen: je nach Level andere Positionen
-    # Format: Plattform(x, y, breite, hoehe)
+    # plattformen: je nach Level andere Positionen
+    # strukrut: Plattform(x, y, breite, hoehe)
     plattformen_pro_level = {
-        0: [],  # Kampf 1: keine Plattformen, einfaches Einstiegslevel
-        1: [    # Kampf 2: eine Plattform in der Mitte
+        0: [],  # Kampf 1 - keine Plattformen (auch nur ein gegner)
+        1: [    # Kampf 2 - eine Plattform in der Mitte
             Plattform(700, 620, 300, 25),
         ],
-        2: [    # Kampf 3: zwei Plattformen
+        2: [    # Kampf 3
             Plattform(400, 600, 250, 25),
             Plattform(1100, 550, 250, 25),
         ],
-        3: [    # Kampf 4: Treppen-artig
+        3: [    # Kampf 4 - (wie treppe)
             Plattform(300, 680, 200, 25),
             Plattform(700, 580, 200, 25),
             Plattform(1100, 480, 200, 25),
         ],
-        4: [    # Kampf 5: zwei Plattformen nebeneinander hoch oben
+        4: [    # Kampf 5 - zwei Plattformen nebeneinander (hoch oben)
             Plattform(500, 500, 200, 25),
             Plattform(1000, 500, 200, 25),
         ],
-        5: [    # Kampf 6: eine breite Plattform
+        5: [    # Kampf 6 - eine breite Plattform
             Plattform(600, 550, 500, 25),
         ],
-        6: [    # Kampf 7: mehrere kleine Plattformen
+        6: [    # Kampf 7 - mehrere kleine Plattformen
             Plattform(250, 650, 150, 25),
             Plattform(600, 550, 150, 25),
             Plattform(950, 450, 150, 25),
             Plattform(1300, 550, 150, 25),
         ],
-        7: [    # Boss: keine Plattformen, freie Fläche für den Bosskampf
+        7: [    # Boss: keine Plattformen, freie Fläche für Bosskampf
         ],
     }
 
-    # Gegner pro Level: stärker mit zunehmendem Level
+    # Gegner pro Level werden stärker mit jedem Level
     gegner_pro_level = {
-        0: [  # Kampf 1: ein schwacher Gegner
+        0: [  # Kampf 1 - schwacher Gegner
             Gegner(None, "Nahkampf", 1200, boden_y - 200, 800, 1600, 200, 200,
                    [0, 1, 0, 0], 3, 2, laufAnimation=zombie_lauf),
         ],
-        1: [  # Kampf 2: zwei Gegner
+        1: [  # Kampf 2 - zwei Gegner
             Gegner(None, "Nahkampf", 1000, boden_y - 200, 600, 1400, 200, 200,
                    [0, 1, 0, 0], 4, 4, laufAnimation=zombie_lauf),
             Gegner(None, "Nahkampf", 1500, boden_y - 200, 1000, 1800, 200, 200,
@@ -115,7 +112,7 @@ def level_daten_laden(level_nr):
             Gegner(None, "Nahkampf", 1500, boden_y - 200, 1000, 1800, 200, 200,
                    [1, 0, 0, 0], 6, 4, laufAnimation=zombie_lauf),
         ],
-        6: [  # Kampf 7: drei Gegner
+        6: [  # Kampf 7 - drei Gegner
             Gegner(None, "Nahkampf", 700, boden_y - 200, 300, 1200, 200, 200,
                    [0, 1, 0, 0], 7, 4, laufAnimation=zombie_lauf),
             Gegner(None, "Nahkampf", 1200, boden_y - 200, 800, 1600, 200, 200,
@@ -123,23 +120,21 @@ def level_daten_laden(level_nr):
             Gegner(None, "Nahkampf", 1600, boden_y - 200, 1200, 1900, 200, 200,
                    [0, 1, 0, 0], 7, 4, laufAnimation=zombie_lauf),
         ],
-        7: [  # Boss: ein sehr starker Gegner
+        7: [  # Boss - sehr starker Gegner (bosskampf halt)
             Gegner(None, "Nahkampf", 1200, boden_y - 200, 500, 1700, 250, 250,
                    [1, 0, 0, 0], 5, 12, laufAnimation=zombie_lauf),
         ],
     }
 
-    # Hintergrundbild laden
+    # hntergrundbild laden
     try:
         hintergrund = pygame.image.load(hintergrund_pfade[level_nr]).convert()
         hintergrund = pygame.transform.scale(hintergrund, (breite, hoehe))
     except:
-        hintergrund = None  # Falls Bild nicht gefunden, einfach schwarzer Hintergrund
-
+        hintergrund = None 
+        
     return hintergrund, plattformen_pro_level[level_nr], gegner_pro_level[level_nr]
 
-
-# --- Haupt-Kampffunktion ---
 def kampf_starten(screen, level_nr, ist_boss):
 
     clock = pygame.time.Clock()
@@ -159,8 +154,6 @@ def kampf_starten(screen, level_nr, ist_boss):
     boden = pygame.Rect(0, boden_y, breite, hoehe - boden_y)
 
     while True:
-
-        # --- Events ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -169,12 +162,12 @@ def kampf_starten(screen, level_nr, ist_boss):
                 if event.key == pygame.K_SPACE:
                     spieler.startSprung()
                 if event.key == pygame.K_ESCAPE:
-                    return None  # Zurück zur Map ohne Ergebnis
+                    return None  # zurück zur Map (ohne Ergebnis)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     spieler.schiessen()
 
-        # --- Tasten dauerhaft abfragen (für Bewegung links/rechts) ---
+        # tasten dauerhaft abfragen (für Bewegung links& rechts)
         tasten = pygame.key.get_pressed()
         links = tasten[pygame.K_a]
         rechts = tasten[pygame.K_d]
@@ -205,15 +198,15 @@ def kampf_starten(screen, level_nr, ist_boss):
         # Spieler nicht aus dem Bildschirm laufen lassen
         spieler.x = max(0, min(breite - spieler.breite, spieler.x))
 
-        # --- Gegner-Updates ---
+        # gegnerupdates
         for g in gegner_liste:
             if g.leben > 0:
                 g.Bewegungsregler()
                 g.bewegen()
-                spieler.trefferCheck(g)   # prüft ob Kugeln den Gegner treffen
-                spieler.kollision(g)       # prüft ob Gegner den Spieler berührt
+                spieler.trefferCheck(g)   # prüft ob Kugeln Gegner treffen
+                spieler.kollision(g)       # prüft ob Gegner Spieler berührt
 
-        # --- Zeichnen ---
+        # zeichnen
         # Hintergrund
         if hintergrund:
             screen.blit(hintergrund, (0, 0))
@@ -240,33 +233,33 @@ def kampf_starten(screen, level_nr, ist_boss):
         # Spieler zeichnen
         spieler.spielerImage()
 
-        # --- HUD (oben links): Level-Name und Hinweis ---
+        # HUD lever & hinweis
         level_text = font.render(f"Level {level_nr + 1}{'  –  BOSS!' if ist_boss else ''}", True, weiss)
         screen.blit(level_text, (20, 20))
         hinweis = pygame.font.SysFont("Arial", 18).render("ESC = zurück zur Map", True, grau)
         screen.blit(hinweis, (20, 60))
 
-        # --- Gewonnen? Alle Gegner besiegt ---
+        # gewonnen - alle Gegner besiegt
         alle_tot = all(g.leben <= 0 for g in gegner_liste)
         if alle_tot:
             gewonnen_text = font.render("Level geschafft! Weiter...", True, gruen)
             screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
             pygame.display.flip()
             pygame.time.wait(2000)
-            return True  # Gewonnen → zurück zur Map
+            return True  # gewonnen - zurück zur map
 
-        # --- Verloren? Spieler tot ---
+        # verloren - spieler tot
         if not spieler.go:
             verloren_text = font.render("Du bist gestorben!", True, rot)
             screen.blit(verloren_text, (breite // 2 - verloren_text.get_width() // 2, hoehe // 2))
             pygame.display.flip()
             pygame.time.wait(2000)
-            return False  # Verloren → zurück zur Map
+            return False  # verloren - zurück zur map
 
         pygame.display.flip()
         clock.tick(60)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1920, 1080), pygame.SCALED | pygame.FULLSCREEN)
     kampf_starten(screen, 0, False)
