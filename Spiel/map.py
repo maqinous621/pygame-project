@@ -3,11 +3,11 @@ import sys
 import math
 import level # level.py wird importiert
 
-# Fenstergröße
+# fenstergröße
 breite = 1920
 hoehe = 1080
 
-# Farben
+# farben
 weiss = (255, 255, 255)
 schwarz = (0, 0, 0)
 grau = (150, 150, 150)
@@ -203,7 +203,7 @@ def main(screen):
         clock.tick(60)
 
 
-def main():
+def main(screen):
     pygame.init()
     screen = pygame.display.set_mode((breite, hoehe))
     pygame.display.set_caption("Schatzsuche – Map")
