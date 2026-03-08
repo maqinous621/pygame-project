@@ -120,7 +120,7 @@ def hauptmenu():
 
         # Name unter der Figur
         name = untertitel_font.render("Die Junge Dame", True, gold)
-        screen.blit(name, (1390 - name.get_width() // 2, 990))
+        screen.blit(name, (1360, 990))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,7 +128,7 @@ def hauptmenu():
                 sys.exit()
 
             if start_button.wurde_geklickt(event):
-                map.main(screen)  # Fortschritts-Map starten
+                map.main(screen)  # map.py starten
 
             if beenden_button.wurde_geklickt(event):
                 pygame.quit()
