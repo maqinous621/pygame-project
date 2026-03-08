@@ -200,43 +200,6 @@ def main(screen):
                             pygame.time.wait(4000)
                             return # zurück zu hauptmenü
 
-        clock.tick(60)
-
-
-def main(screen):
-    pygame.init()
-    screen = pygame.display.set_mode((breite, hoehe))
-    pygame.display.set_caption("Schatzsuche – Map")
-    clock = pygame.time.Clock()
-
-    karte = Fortschrittsmap(screen)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                geklicktes_level = karte.klick_verarbeiten(event.pos)
-
-                if geklicktes_level is not None:
-                    level = karte.level_liste[geklicktes_level]
-                    ergebnis = kampf_starten(screen, level.name, level.boss)
-
-                    if ergebnis == True:
-                        karte.level_abschliessen(geklicktes_level)
-                        karte.ausgewaehlt = None
-
-                        # Wenn der Boss besiegt wurde → Spiel gewonnen!
-                        if level.boss:
-                            screen.fill(schwarz)
-                            font = pygame.font.SysFont("Arial", 48, bold=True)
-                            txt = font.render("🏆  Du hast den Schatz gefunden!  🏆", True, gelb)
-                            screen.blit(txt, (breite // 2 - txt.get_width() // 2, hoehe // 2 - 30))
-                            pygame.display.flip()
-                            pygame.time.wait(3000)
-
         karte.zeichnen()
         pygame.display.flip()
         clock.tick(60)

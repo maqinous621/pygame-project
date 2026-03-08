@@ -48,7 +48,7 @@ class Button:
 def hauptmenu():
     # Buttons zentriert auf 1920x1080
     start_button   = Button("Spiel starten", 760, 480, 400, 70)
-    beenden_button = Button("Beenden",        760, 580, 400, 70)
+    beenden_button = Button("Beenden", 760, 580, 400, 70)
 
     while True:
         screen.fill((60, 60, 60))
@@ -56,7 +56,7 @@ def hauptmenu():
         # Titel
         titel = titel_font.render("Schatzsuche", True, weiss)
         untertitel = titel_font.render("in der verlassenen Stadt", True, weiss)
-        screen.blit(titel,     titel.get_rect(center=(960, 280)))
+        screen.blit(titel, titel.get_rect(center=(960, 280)))
         screen.blit(untertitel, untertitel.get_rect(center=(960, 350)))
 
         # Buttons zeichnen
@@ -77,7 +77,6 @@ def hauptmenu():
 
         pygame.display.update()
         clock.tick(60)
-
 
 if __name__ == "__main__":
     hauptmenu()
