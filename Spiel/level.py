@@ -204,7 +204,7 @@ def kampf_starten(screen, level_nr, ist_boss):
                 g.Bewegungsregler()
                 g.bewegen()
                 spieler.trefferCheck(g)   # prüft ob Kugeln Gegner treffen
-                spieler.kollision(g)       # prüft ob Gegner Spieler berührt
+
 
         # zeichnen
         # Hintergrund
