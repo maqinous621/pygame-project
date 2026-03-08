@@ -12,9 +12,10 @@ weiss = (255, 255, 255)
 rot = (200, 50, 50)
 gruen = (50, 200, 50)
 grau = (100, 100, 100)
+gold = (212, 175, 55)
 
 # boden-y-position (da wo die Figuren stehen)
-boden_y = 780
+boden_y = 690
 
 class Plattform:
     # Plattform auf der Figur stehen kann
@@ -24,134 +25,110 @@ class Plattform:
 
     def zeichnen(self, screen):
         pygame.draw.rect(screen, self.farbe, self.rect)
-        pygame.draw.rect(screen, schwarz, self.rect, 2)  # dünner Rahmen wie bei
+        pygame.draw.rect(screen, schwarz, self.rect, 2)  # dünner Rahmen wie bei buttons auch
 
 
-# level-Daten - Hintergrund + Plattformen + gegner pro level
+# level-Daten - hintergrund, Plattformen, gegner pro level, von claude 
 def level_daten_laden(level_nr):
 
     # zombie-Animationen
-    zombie_lauf = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Run{i}.png").convert_alpha() for i in range(1, 11)]
-
+    zombie_run  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Run{i}.png")  for i in range(1, 11)]
+    zombie_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png") for i in range(1, 9)]
     # hintergründe
     hintergrund_pfade = {
-        0: "Spiel/Hintergründe/2/background.png",
-        1: "Spiel/Hintergründe/3/background.png",
+        0: "Spiel/Hintergründe/4/background.png",
+        1: "Spiel/Hintergründe/4/background.png",
         2: "Spiel/Hintergründe/4/background.png",
-        3: "Spiel/Hintergründe/2/background.png",
-        4: "Spiel/Hintergründe/3/background.png",
-        5: "Spiel/Hintergründe/4/background.png",
-        6: "Spiel/Hintergründe/2/background.png",
-        7: "Spiel/Hintergründe/3/background.png",  # Boss
+        3: "Spiel/Hintergründe/4/background.png",
+        4: "Spiel/Hintergründe/3/background.png",  # Boss
     }
 
-    # plattformen: je nach Level andere Positionen
+    # plattformen je nach Level
     # strukrut: Plattform(x, y, breite, hoehe)
     plattformen_pro_level = {
         0: [],  # Kampf 1 - keine Plattformen (auch nur ein gegner)
         1: [    # Kampf 2 - eine Plattform in der Mitte
-            Plattform(700, 620, 300, 25),
+            Plattform(700, 550, 400, 25),
         ],
-        2: [    # Kampf 3
-            Plattform(400, 600, 250, 25),
-            Plattform(1100, 550, 250, 25),
+        2: [    # Kampf 3 zwei pattformen
+            Plattform(400, 520, 250, 25),
+            Plattform(1100, 480, 250, 25),
         ],
         3: [    # Kampf 4 - (wie treppe)
-            Plattform(300, 680, 200, 25),
-            Plattform(700, 580, 200, 25),
-            Plattform(1100, 480, 200, 25),
+            Plattform(300, 620, 200, 25),
+            Plattform(750, 520, 200, 25),
+            Plattform(1200, 420, 200, 25),
         ],
-        4: [    # Kampf 5 - zwei Plattformen nebeneinander (hoch oben)
-            Plattform(500, 500, 200, 25),
-            Plattform(1000, 500, 200, 25),
-        ],
-        5: [    # Kampf 6 - eine breite Plattform
-            Plattform(600, 550, 500, 25),
-        ],
-        6: [    # Kampf 7 - mehrere kleine Plattformen
-            Plattform(250, 650, 150, 25),
-            Plattform(600, 550, 150, 25),
-            Plattform(950, 450, 150, 25),
-            Plattform(1300, 550, 150, 25),
-        ],
-        7: [    # Boss: keine Plattformen, freie Fläche für Bosskampf
-        ],
+        4: [],    # Boss: keine Plattformen, freie Fläche
     }
 
-    # Gegner pro Level werden stärker mit jedem Level
     gegner_pro_level = {
-        0: [  # Kampf 1 - schwacher Gegner
-            Gegner(None, "Nahkampf", 1200, boden_y - 200, 800, 1600, 200, 200,
-                   [0, 1, 0, 0], 3, 2, laufAnimation=zombie_lauf),
+        0: [  # Kampf 1 - schwacher Zombie
+            Gegner(None, "Nahkampf", 1800, boden_y, 100, 1850, 137, 290,
+                   [1, 0, 0, 0], 3, 2,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
-        1: [  # Kampf 2 - zwei Gegner
-            Gegner(None, "Nahkampf", 1000, boden_y - 200, 600, 1400, 200, 200,
-                   [0, 1, 0, 0], 4, 4, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1500, boden_y - 200, 1000, 1800, 200, 200,
-                   [1, 0, 0, 0], 4, 2, laufAnimation=zombie_lauf),
+        1: [  # Kampf 2: zwei Zombies
+            Gegner(None, "Nahkampf", 1200, boden_y, 100, 1500, 137, 290,
+                   [1, 0, 0, 0], 4, 4,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+            Gegner(None, "Nahkampf", 1700, boden_y, 900, 1850, 137, 290,
+                   [1, 0, 0, 0], 4, 2,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
-        2: [  # Kampf 3
-            Gegner(None, "Nahkampf", 900, boden_y - 200, 500, 1400, 200, 200,
-                   [0, 1, 0, 0], 5, 4, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1400, boden_y - 200, 900, 1800, 200, 200,
-                   [1, 0, 0, 0], 5, 4, laufAnimation=zombie_lauf),
+        2: [  # Kampf 3: zwei stärkere Zombies
+            Gegner(None, "Nahkampf", 1200, boden_y, 100, 1500, 137, 290,
+                   [1, 0, 0, 0], 4, 4,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+            Gegner(None, "Nahkampf", 1700, boden_y, 900, 1850, 137, 290,
+                   [1, 0, 0, 0], 4, 2,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
-        3: [  # Kampf 4
-            Gegner(None, "Nahkampf", 1100, boden_y - 200, 600, 1600, 200, 200,
-                   [0, 1, 0, 0], 5, 6, laufAnimation=zombie_lauf),
+        3: [  # Kampf 4: drei Zombies
+            Gegner(None, "Nahkampf", 700, boden_y, 100, 1100, 137, 290,
+                   [0, 1, 0, 0], 5, 4,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+            Gegner(None, "Nahkampf", 1200, boden_y, 700, 1600, 137, 290,
+                   [1, 0, 0, 0], 5, 4,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+            Gegner(None, "Nahkampf", 1700, boden_y, 1200, 1850, 137, 290,
+                   [1, 0, 0, 0], 5, 4,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
-        4: [  # Kampf 5
-            Gegner(None, "Nahkampf", 800, boden_y - 200, 400, 1300, 200, 200,
-                   [0, 1, 0, 0], 6, 4, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1400, boden_y - 200, 900, 1800, 200, 200,
-                   [1, 0, 0, 0], 6, 4, laufAnimation=zombie_lauf),
-        ],
-        5: [  # Kampf 6
-            Gegner(None, "Nahkampf", 900, boden_y - 200, 500, 1500, 200, 200,
-                   [0, 1, 0, 0], 6, 6, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1500, boden_y - 200, 1000, 1800, 200, 200,
-                   [1, 0, 0, 0], 6, 4, laufAnimation=zombie_lauf),
-        ],
-        6: [  # Kampf 7 - drei Gegner
-            Gegner(None, "Nahkampf", 700, boden_y - 200, 300, 1200, 200, 200,
-                   [0, 1, 0, 0], 7, 4, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1200, boden_y - 200, 800, 1600, 200, 200,
-                   [1, 0, 0, 0], 7, 4, laufAnimation=zombie_lauf),
-            Gegner(None, "Nahkampf", 1600, boden_y - 200, 1200, 1900, 200, 200,
-                   [0, 1, 0, 0], 7, 4, laufAnimation=zombie_lauf),
-        ],
-        7: [  # Boss - sehr starker Gegner (bosskampf halt)
-            Gegner(None, "Nahkampf", 1200, boden_y - 200, 500, 1700, 250, 250,
-                   [1, 0, 0, 0], 5, 12, laufAnimation=zombie_lauf),
+        4: [  # Boss: ein sehr starker Zombie
+            Gegner(None, "Nahkampf", 1500, boden_y, 100, 1850, 200, 400,
+                   [1, 0, 0, 0], 4, 12,
+                   laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
     }
 
-    # hntergrundbild laden
-    try:
-        hintergrund = pygame.image.load(hintergrund_pfade[level_nr]).convert()
-        hintergrund = pygame.transform.scale(hintergrund, (breite, hoehe))
-    except:
-        hintergrund = None 
+    # hntergrundbild laden & skalieren
+    hintergrund = pygame.transform.scale(
+        pygame.image.load(hintergrund_pfade[level_nr]).convert(),
+        (breite, hoehe)
+    )
         
     return hintergrund, plattformen_pro_level[level_nr], gegner_pro_level[level_nr]
 
 def kampf_starten(screen, level_nr, ist_boss):
+    # wird bei der map.py aufgerufen
 
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Arial", 28, bold=True)
+    klein = pygame.font.SysFont("Arial", 18)
 
     # Level-Daten laden (Hintergrund, Plattformen, Gegner)
     hintergrund, plattformen, gegner_liste = level_daten_laden(level_nr)
 
     # Spielfigur erstellen – startet links auf dem Boden
-    spieler = Spielfigur(screen, 100, boden_y - 200, 200, 200, [0, 1, 0, 0], 8)
+    spieler = Spielfigur(screen, 200, boden_y, 320, 271, [0,0,1,0], 10)
 
-    # Screen-Referenz an alle Gegner übergeben (wurde beim Erstellen noch nicht gesetzt)
+    linke_wand = pygame.Rect(0,0,2,hoehe)
+    rechte_wand = pygame.Rect(1918,0,2,hoehe)
+
+    # Screen-Referenz an alle Gegner übergeben
     for g in gegner_liste:
         g.screen = screen
-
-    # Boden-Rechteck für Kollision
-    boden = pygame.Rect(0, boden_y, breite, hoehe - boden_y)
 
     while True:
         for event in pygame.event.get():
@@ -169,25 +146,36 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         # tasten dauerhaft abfragen (für Bewegung links& rechts)
         tasten = pygame.key.get_pressed()
-        links = tasten[pygame.K_a]
-        rechts = tasten[pygame.K_d]
 
-        if links or rechts:
-            spieler.laufen([links, rechts])
+        # Bewegen mit Wandkollision (wie in test.py)
+        if tasten[pygame.K_a] and not spieler.hitbox.colliderect(linke_wand) and not spieler.dead:
+            spieler.laufen([1, 0])
+        elif tasten[pygame.K_d] and not spieler.hitbox.colliderect(rechte_wand) and not spieler.dead:
+            spieler.laufen([0, 1])
         else:
             spieler.stehen()
-
-        # --- Spieler-Updates ---
+        # springen
+        if tasten[pygame.K_SPACE] and not spieler.sprung and not spieler.dead:
+            spieler.startSprung()
         spieler.updateSprung()
+
+        #schießen mit F-Taste (wie in test.py auch)
+        if tasten[pygame.K_f]:
+            if len(spieler.kugeln) <= 2:
+                spieler.schiessen()
+                spieler.ok = False
+        if not tasten[pygame.K_f]:
+            spieler.ok = True
+
         spieler.kugelverhalten()
 
-        # Spieler auf Boden halten
-        if spieler.y >= boden_y - spieler.hoehe:
-            spieler.y = boden_y - spieler.hoehe
+        # Spieler auf boden halten
+        if spieler.y >= boden_y:
+            spieler.y = boden_y
             spieler.sprung = False
             spieler.sprungzahl = 13
 
-        # Spieler auf Plattformen halten
+        # spieler auf plattformen halten
         for p in plattformen:
             spieler_rect = pygame.Rect(spieler.x, spieler.y, spieler.breite, spieler.hoehe)
             if spieler_rect.colliderect(p.rect) and spieler.y + spieler.hoehe <= p.rect.y + 20:
@@ -195,27 +183,15 @@ def kampf_starten(screen, level_nr, ist_boss):
                 spieler.sprung = False
                 spieler.sprungzahl = 13
 
-        # Spieler nicht aus dem Bildschirm laufen lassen
-        spieler.x = max(0, min(breite - spieler.breite, spieler.x))
-
-        # gegnerupdates
+        # gegner updates
         for g in gegner_liste:
             if g.leben > 0:
                 g.Bewegungsregler()
                 g.bewegen()
-                spieler.trefferCheck(g)   # prüft ob Kugeln Gegner treffen
+                spieler.trefferCheck(g)
 
-
-        # zeichnen
-        # Hintergrund
-        if hintergrund:
-            screen.blit(hintergrund, (0, 0))
-        else:
-            screen.fill((30, 30, 30))
-
-        # Boden zeichnen
-        pygame.draw.rect(screen, (60, 40, 10), boden)
-        pygame.draw.line(screen, schwarz, (0, boden_y), (breite, boden_y), 3)
+        #zeichnen
+        screen.blit(hintergrund, (0, 0))
 
         # Plattformen zeichnen
         for p in plattformen:
@@ -225,18 +201,18 @@ def kampf_starten(screen, level_nr, ist_boss):
         for k in spieler.kugeln:
             k.zeichnen()
 
-        # Gegner zeichnen
+        # gegner gezeichnet
         for g in gegner_liste:
             if g.leben > 0:
                 g.gegnerImage()
 
-        # Spieler zeichnen
+        # spieler gezeichnet
         spieler.spielerImage()
 
         # HUD lever & hinweis
         level_text = font.render(f"Level {level_nr + 1}{'  –  BOSS!' if ist_boss else ''}", True, weiss)
         screen.blit(level_text, (20, 20))
-        hinweis = pygame.font.SysFont("Arial", 18).render("ESC = zurück zur Map", True, grau)
+        hinweis = klein.render("ESC = zurück zur Map  |  F = Schießen  |  Leertaste = Springen", True, grau)
         screen.blit(hinweis, (20, 60))
 
         # gewonnen - alle Gegner besiegt
