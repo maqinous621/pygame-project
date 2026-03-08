@@ -64,7 +64,7 @@ def level_daten_laden(level_nr):
 
     gegner_pro_level = {
         0: [  # Kampf 1 - schwacher Zombie
-            Gegner(None, "Nahkampf", 1800, boden_y, 100, 1850, 137, 290,
+            Gegner(None, "Nahkampf", 1800, boden_y - 30, 100, 1850, 137, 290,
                    [1, 0, 0, 0], 3, 2,
                    laufAnimation=zombie_run, totAnimation=zombie_dead),
         ],
@@ -178,17 +178,19 @@ def kampf_starten(screen, level_nr, ist_boss):
         # spieler auf plattformen halten
         for p in plattformen:
             spieler_rect = pygame.Rect(spieler.x, spieler.y, spieler.breite, spieler.hoehe)
-            if spieler_rect.colliderect(p.rect) and spieler.y + spieler.hoehe <= p.rect.y + 20:
+            # nur von oben landen – Spieler muss von oben kommen (vorherige Y-Position über Plattform)
+            if spieler_rect.colliderect(p.rect) and spieler.sprungzahl <= 0:
                 spieler.y = p.rect.y - spieler.hoehe
                 spieler.sprung = False
                 spieler.sprungzahl = 13
 
         # gegner updates
         for g in gegner_liste:
-            if g.leben > 0:
-                g.Bewegungsregler()
-                g.bewegen()
-                spieler.trefferCheck(g)
+            if g.go:
+                if not g.dead:
+                    g.Bewegungsregler()
+                    g.bewegen()
+                    spieler.trefferCheck(g)
 
         #zeichnen
         screen.blit(hintergrund, (0, 0))
@@ -203,7 +205,7 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         # gegner gezeichnet
         for g in gegner_liste:
-            if g.leben > 0:
+            if g.go:
                 g.gegnerImage()
 
         # spieler gezeichnet
@@ -216,9 +218,9 @@ def kampf_starten(screen, level_nr, ist_boss):
         screen.blit(hinweis, (20, 60))
 
         # gewonnen - alle Gegner besiegt
-        alle_tot = all(g.leben <= 0 for g in gegner_liste)
+        alle_tot = all(not g.go for g in gegner_liste)
         if alle_tot:
-            gewonnen_text = font.render("Level geschafft! Weiter...", True, gruen)
+            gewonnen_text = font.render("Level geschafft! Weiter...", True, gold)
             screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
             pygame.display.flip()
             pygame.time.wait(2000)
