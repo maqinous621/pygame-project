@@ -249,7 +249,7 @@ class Gegner:
             self.richtung = [1,0,0,0]
             self.laufIndex = 0
 
-    def gegnerImage(self):
+    def gegnerImage(self):  
         self.hitbox = pygame.Rect(self.x+50, self.y+150, self.breite-70, self.hoehe)
         self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-200)
         if self.gegnerArt == "Nahkampf":
