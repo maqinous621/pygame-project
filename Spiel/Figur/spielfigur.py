@@ -253,10 +253,10 @@ class Gegner:
         self.hitbox = pygame.Rect(self.x+50, self.y+150, self.breite-70, self.hoehe)
         self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-200)
         if self.gegnerArt == "Nahkampf":
-            if self.dead: # mit Hilfe von Claude AI erstellt, da die Tot-Animation des Zombies nicht richtig angezeigt wurde
+            if self.dead: # mit Hilfe von Claude.Ai erstellt, da die Tot-Animation des Zombies nicht richtig angezeigt wurde
                 frameAnzahl = len(self.totAnimation)
                 bildIndex = min(self.totIndex // 10, frameAnzahl - 1)
-                
+
                 referenzBreite = self.laufAnimation[0].get_width()
                 origBreite, origHoehe = self.totAnimation[bildIndex].get_size()
                 skalierung = self.breite / referenzBreite
