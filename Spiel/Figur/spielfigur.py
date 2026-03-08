@@ -87,7 +87,15 @@ class Spielfigur:
             if other.hitbox.colliderect(k.hitbox):
                 other.leben -= 1
                 self.kugeln.remove(k)
+            elif other.kopf.colliderect(k.x-10,k.y-10, 20, 20):
+                self.kugeln.remove(k)
+                other.leben -= 3
+            if other.leben <= 0:
+                other.dead = True
                 # Treffer Sound hinzufügen
+        if self.hitbox.colliderect(other.hitbox):
+                self.dead = True
+                # Tod Sound hinzufügen
 
     def schiessen(self):
         if self.ok and not self.schiessen_aktiv:
@@ -103,29 +111,20 @@ class Spielfigur:
             else:
                 self.kugeln.remove(k)
 
-    def kollision(self, other):
-        for k in self.kugeln:
-            if other.hitbox.colliderect(k.hitbox):
-                self.kugeln.remove(k)
-                other.leben -= 1
-
-        if self.hitbox.colliderect(other.hitbox):
-            self.dead = True
-            # Tod Sound hinzufügen
-
     def spielerImage(self):
         if self.last[0]:
-            self.hitbox = pygame.Rect((self.x + 50, self.y, self.breite-85, self.hoehe))
+            self.hitbox = pygame.Rect((self.x + 110, self.y, self.breite-165, self.hoehe))
         else:
-            self.hitbox = pygame.Rect((self.x + 30, self.y, self.breite-95, self.hoehe))
+            self.hitbox = pygame.Rect((self.x + 80, self.y, self.breite-175, self.hoehe))
 
         if self.dead:
+            bildIndex = min(self.totIndex // 10, 9)
             if self.last[0]:
-                self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.tot[self.totIndex // 5], (self.breite, self.hoehe)), True, False), (self.x, self.y)) # 5 Frames pro Bild
+                self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.tot[bildIndex], (self.breite, self.hoehe)), True, False), (self.x, self.y))
             else:
-                self.screen.blit(pygame.transform.scale(self.tot[self.totIndex // 5], (self.breite, self.hoehe)), (self.x, self.y))
+                self.screen.blit(pygame.transform.scale(self.tot[bildIndex], (self.breite, self.hoehe)), (self.x, self.y))
             self.totIndex += 1
-            if self.totIndex == 10:
+            if self.totIndex >= 100:
                 self.go = False
 
         else:
@@ -184,6 +183,7 @@ class Kugel:
 
     def bewegen(self):
         self.x += self.geschwindigkeit
+        self.hitbox = pygame.Rect(self.x-10, self.y-10, 20, 20)
 
     def zeichnen(self):
         pygame.draw.circle(self.screen, (0,0,0), (self.x, self.y), 10, 0)
@@ -215,27 +215,31 @@ class Gegner:
         self.trefferIndex = 0
         self.herzen = [pygame.image.load("Spiel/Figur/png/voll.png"), pygame.image.load("Spiel/Figur/png/halb.png"), pygame.image.load("Spiel/Figur/png/leer.png")]
         self.hitbox = pygame.Rect(self.x, self.y, self.breite, self.hoehe)
+        self.kopf = pygame.Rect(self.x, self.y, self.breite, self.hoehe)
         self.sprung = False
         self.dead = False
         self.go = True
         self.last = [1,0] #Letzte Richtung
 
     def bewegen(self):
-        if self.gegnerArt == "Nahkampf":
-            if self.richtung == [1,0,0,0]: # Links
-                self.x -= self.geschwindigkeit
-                self.last = [1,0]
-                self.laufIndex += 1
-            elif self.richtung == [0,1,0,0]: # Rechts
-                self.x += self.geschwindigkeit
-                self.last = [0,1]
-                self.laufIndex += 1
-        elif self.gegnerArt == "Fernkampf":
-            pass
-        elif self.gegnerArt == "Fliegend":
-            pass
-        elif self.gegnerArt == "Boss":
-            pass
+        if self.dead:
+            return
+        else:
+            if self.gegnerArt == "Nahkampf":
+                if self.richtung == [1,0,0,0]: # Links
+                    self.x -= self.geschwindigkeit
+                    self.last = [1,0]
+                    self.laufIndex += 1
+                elif self.richtung == [0,1,0,0]: # Rechts
+                    self.x += self.geschwindigkeit
+                    self.last = [0,1]
+                    self.laufIndex += 1
+            elif self.gegnerArt == "Fernkampf":
+                pass
+            elif self.gegnerArt == "Fliegend":
+                pass
+            elif self.gegnerArt == "Boss":
+                pass
 
     def Bewegungsregler(self):
         if self.x <= self.xMin:
@@ -245,15 +249,40 @@ class Gegner:
             self.richtung = [1,0,0,0]
             self.laufIndex = 0
 
-    def gegnerImage(self):
-        self.hitbox = pygame.Rect(self.x, self.y, self.breite, self.hoehe)
+    def gegnerImage(self):  
+        self.hitbox = pygame.Rect(self.x+50, self.y+150, self.breite-70, self.hoehe)
+        self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-200)
         if self.gegnerArt == "Nahkampf":
-            if self.laufIndex >= len(self.laufAnimation) ** 2 - 1: 
-                self.laufIndex = 0
-            if self.richtung == [1,0,0,0]: # Links
-                self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.laufAnimation[self.laufIndex//len(self.laufAnimation)], (self.breite, self.hoehe)), True, False), (self.x, self.y))
-            elif self.richtung == [0,1,0,0]: # Rechts
-                self.screen.blit(pygame.transform.scale(self.laufAnimation[self.laufIndex//len(self.laufAnimation)], (self.breite, self.hoehe)), (self.x, self.y))
+            if self.dead: # mit Hilfe von Claude.Ai erstellt, da die Tot-Animation des Zombies nicht richtig angezeigt wurde
+                frameAnzahl = len(self.totAnimation)
+                bildIndex = min(self.totIndex // 10, frameAnzahl - 1)
+
+                referenzBreite = self.laufAnimation[0].get_width()
+                origBreite, origHoehe = self.totAnimation[bildIndex].get_size()
+                skalierung = self.breite / referenzBreite
+                
+                totBreite = int(origBreite * skalierung)
+                totHoehe = int(origHoehe * skalierung)
+                
+                bodenY = self.y + self.hoehe          # Boden bleibt fest
+                zeichenY = bodenY - totHoehe          # Bild von unten positionieren
+                
+                if self.last[0]:
+                    self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.totAnimation[bildIndex], (totBreite, totHoehe)), True, False), (self.x, zeichenY))
+                else:
+                    self.screen.blit(pygame.transform.scale(self.totAnimation[bildIndex], (totBreite, totHoehe)), (self.x, zeichenY))
+                
+                if self.totIndex < frameAnzahl * 10:
+                    self.totIndex += 1
+                else:
+                    self.go = False
+            else:
+                if self.laufIndex >= len(self.laufAnimation) ** 2 - 1: 
+                    self.laufIndex = 0
+                if self.richtung == [1,0,0,0]: # Links
+                    self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.laufAnimation[self.laufIndex//len(self.laufAnimation)], (self.breite, self.hoehe)), True, False), (self.x, self.y))
+                elif self.richtung == [0,1,0,0]: # Rechts
+                    self.screen.blit(pygame.transform.scale(self.laufAnimation[self.laufIndex//len(self.laufAnimation)], (self.breite, self.hoehe)), (self.x, self.y))
         elif self.gegnerArt == "Fernkampf":
             pass
         elif self.gegnerArt == "Fliegend":
@@ -283,5 +312,3 @@ class Gegner:
             self.screen.blit(self.herzen[2], (self.x + 37,self.y-70))
         if self.leben <= 4:
             self.screen.blit(self.herzen[2], (self.x + 99,self.y-70))
-
-    

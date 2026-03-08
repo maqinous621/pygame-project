@@ -1,7 +1,6 @@
 import pygame
 import sys
 from spielfigur import Gegner, Spielfigur
-
 pygame.init() # Pygame initialisieren, um Fehler zu vermeiden
 info = pygame.display.Info() # Bildschirmgröße ermitteln 
 screen = pygame.display.set_mode((1920, 1080), pygame.SCALED | pygame.FULLSCREEN) # Bildschirm erstellen, im Vollbildmodus und skaliert, damit es auf jedem Bildschirm funktioniert
@@ -13,8 +12,9 @@ def zeichnen():
     screen.blit(hintergrund, (0,0))
     for k in spieler1.kugeln:
         k.zeichnen()
-    pygame.draw.rect(screen, (255,0,0), zombie.hitbox, 5)
-    pygame.draw.rect(screen, (0,0,0), spieler1.hitbox, 5)
+    # pygame.draw.rect(screen, (255,0,0), zombie.hitbox, 5)
+    # pygame.draw.rect(screen, (0,0,0), spieler1.hitbox, 5)
+    # pygame.draw.rect(screen, (0,255,0), zombie.kopf, 5)
     #for p in plattformen:
     #    p.pzeichnen()
     zombie.gegnerImage()
@@ -24,7 +24,7 @@ def zeichnen():
 linkeWand = pygame.draw.rect(screen, (0,0,0), (0,0,2,1100), 0)
 rechteWand = pygame.draw.rect(screen, (0,0,0), (1914,0,2,1100), 0)
 spieler1 = Spielfigur(screen, 200, 730, 320.5, 271, [0,0,1,0], 10)
-zombie = Gegner(screen, "Nahkampf", 1800, 700, 100, 1850, 137.25, 290.25, [1,0,0,0], 3, 6, [pygame.image.load("Spiel/Figur/png/Walk1.png"), pygame.image.load("Spiel/Figur/png/Walk2.png"), pygame.image.load("Spiel/Figur/png/Walk3.png"), pygame.image.load("Spiel/Figur/png/Walk4.png"), pygame.image.load("Spiel/Figur/png/Walk5.png"), pygame.image.load("Spiel/Figur/png/Walk6.png")], [], [], ["Spiel/Figur/png/Dead1.png", "Spiel/Figur/png/Dead2.png", "Spiel/Figur/png/Dead3.png", "Spiel/Figur/png/Dead4.png", "Spiel/Figur/png/Dead5.png", "Spiel/Figur/png/Dead6.png", "Spiel/Figur/png/Dead7.png", "Spiel/Figur/png/Dead8.png"], ["Spiel/Figur/png/Hurt1.png", "Spiel/Figur/png/Hurt2.png", "Spiel/Figur/png/Hurt3.png", "Spiel/Figur/png/Hurt4.png", "Spiel/Figur/png/Hurt5.png"])
+zombie = Gegner(screen, "Nahkampf", 1800, 700, 100, 1850, 137.25, 290.25, [1,0,0,0], 3, 6, [pygame.image.load("Spiel/Figur/png/Walk1.png"), pygame.image.load("Spiel/Figur/png/Walk2.png"), pygame.image.load("Spiel/Figur/png/Walk3.png"), pygame.image.load("Spiel/Figur/png/Walk4.png"), pygame.image.load("Spiel/Figur/png/Walk5.png"), pygame.image.load("Spiel/Figur/png/Walk6.png")], [], [], [pygame.image.load("Spiel/Figur/png/Dead1.png"), pygame.image.load("Spiel/Figur/png/Dead2.png"), pygame.image.load("Spiel/Figur/png/Dead3.png"), pygame.image.load("Spiel/Figur/png/Dead4.png"), pygame.image.load("Spiel/Figur/png/Dead5.png"), pygame.image.load("Spiel/Figur/png/Dead6.png"), pygame.image.load("Spiel/Figur/png/Dead7.png")], [])
 verloren = False
 gewonnen = False
 #plattformen = [Plattform(200, 300, plattformBild), Plattform(600, 350, plattformBild)]
@@ -58,10 +58,13 @@ while go:
         if len(spieler1.kugeln) <=2:
             spieler1.schiessen()
             spieler1.ok = False
+    
+    if gedrueckt[pygame.K_ESCAPE]:
+        sys.exit()
 
     if not gedrueckt[pygame.K_f]:
         spieler1.ok = True
-        
+    
     zombie.bewegen()
     zombie.Bewegungsregler()
     spieler1.trefferCheck(zombie)
