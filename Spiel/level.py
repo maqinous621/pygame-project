@@ -6,9 +6,8 @@ from Gegner.gegner import Gegner
 breite   = 1920
 hoehe    = 1080
 boden_y  = 690
-gegner_y = boden_y - 30  # Zombie minimal höher damit er nicht unter den Boden geht
+gegner_y = boden_y - 30
 
-# Farben
 schwarz = (0, 0, 0)
 weiss   = (255, 255, 255)
 rot     = (200, 50, 50)
@@ -46,7 +45,6 @@ def kampf_starten(screen, level_nr, ist_boss):
     demon_death = [pygame.image.load(f"Spiel/Gegner/PNG/Demon/Sprites/without_outline/DEATH{i}.png") for i in range(1, 8)]
     demon_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Demon/Sprites/without_outline/Hurt{i}.png") for i in range(1, 5)]
 
-    # Hintergrund je nach Level
     hintergrund_pfade = {
         0: "Spiel/Hintergründe/4/background.png",
         1: "Spiel/Hintergründe/4/background.png",
@@ -59,18 +57,15 @@ def kampf_starten(screen, level_nr, ist_boss):
         (breite, hoehe)
     )
 
-    # Plattformen je Level – niedrig genug damit man sie mit dem Sprung erreicht
-    # Spieler bei boden_y=690, Sprung geht ca. 200px hoch → Plattform max bei ~500
     plattformen_pro_level = {
         0: [],
-        1: [Plattform(700, 565, 400, 25)],
-        2: [Plattform(400, 490, 250, 25), Plattform(1100, 450, 250, 25)],
+        1: [Plattform(700, 550, 400, 25)],
+        2: [Plattform(400, 550, 250, 25), Plattform(1100, 550, 250, 25)],
         3: [Plattform(300, 560, 200, 25), Plattform(750, 470, 200, 25), Plattform(1200, 390, 200, 25)],
         4: [],
     }
     plattformen = plattformen_pro_level[level_nr]
 
-    # Gegner je Level
     gegner_pro_level = {
         0: [
             Gegner(None, "Nahkampf", 1800, gegner_y, 100, 1850, 137, 290,
@@ -110,9 +105,10 @@ def kampf_starten(screen, level_nr, ist_boss):
     linke_wand  = pygame.Rect(0,    0, 2, hoehe)
     rechte_wand = pygame.Rect(1918, 0, 2, hoehe)
 
+    steht_auf_plattform = False  # merkt ob Spieler auf Plattform steht
+
     while True:
 
-        # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -121,7 +117,6 @@ def kampf_starten(screen, level_nr, ist_boss):
                 if event.key == pygame.K_ESCAPE:
                     return None
 
-        # Tasten
         tasten = pygame.key.get_pressed()
 
         if tasten[pygame.K_a] and not spieler.hitbox.colliderect(linke_wand) and not spieler.dead:
@@ -133,8 +128,7 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         if tasten[pygame.K_SPACE] and not spieler.sprung and not spieler.dead:
             spieler.startSprung()
-        spieler.updateSprung()
-        print(spieler.y, spieler.sprung, spieler.sprungzahl, spieler.go, spieler.dead)
+            steht_auf_plattform = False
 
         if tasten[pygame.K_f] and len(spieler.kugeln) <= 2:
             spieler.schiessen()
@@ -144,27 +138,50 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         spieler.kugelverhalten()
 
-        # Spieler auf Boden halten
-        auf_plattform = False
+        # Sprung-Update und Fallrichtung merken
+        vorheriges_y = spieler.y
+        spieler.updateSprung()
+        faellt = spieler.y > vorheriges_y
+
+        # wenn sprung=False aber Spieler nicht auf Boden und nicht auf Plattform → fallen
+        if not spieler.sprung and spieler.y < boden_y and not steht_auf_plattform:
+            spieler.sprung     = True
+            spieler.sprungzahl = 0
+
+        # Boden
         if spieler.y >= boden_y:
-            spieler.y= boden_y
-            spieler.sprung= False
-            spieler.sprungzahl = 13
+            spieler.y           = boden_y
+            spieler.sprung      = False
+            spieler.sprungzahl  = 13
+            steht_auf_plattform = False
+
+        # Plattformen
         else:
+            noch_drauf = False
             for p in plattformen:
-                spieler_rect = pygame.Rect(spieler.x + 80, spieler.y, spieler.breite - 160, spieler.hoehe)
-                fuesse = spieler.y + spieler.hoehe
-                # X-Überlappung prüfen UND von oben kommen
-            if (spieler_rect.right > p.rect.left and spieler_rect.left < p.rect.right
-                    and fuesse >= p.rect.top and fuesse <= p.rect.bottom + 10
-                    and spieler.sprungzahl <= 0):  # nur wenn Spieler fällt (sprungzahl negativ)
-                spieler.y          = p.rect.y - spieler.hoehe
-                spieler.sprung     = False
-                spieler.sprungzahl = 13
-                auf_plattform      = True
-                break
-            if not auf_plattform and not spieler.sprung:
-                spieler.y += 8
+                spieler_mitte_x = spieler.x + spieler.breite // 2
+                fuesse          = spieler.y + spieler.hoehe
+                ueber_plattform = p.rect.left < spieler_mitte_x < p.rect.right
+
+                # landen wenn Spieler fällt und Füße die Plattform kreuzen
+                if faellt and ueber_plattform and p.rect.top <= fuesse <= p.rect.bottom + 20:
+                    spieler.y           = p.rect.y - spieler.hoehe
+                    spieler.sprung      = False
+                    spieler.sprungzahl  = 13
+                    steht_auf_plattform = True
+                    noch_drauf          = True
+                    break
+
+                # bereits drauf – prüfen ob Spieler noch horizontal über der Plattform ist
+                if steht_auf_plattform and ueber_plattform:
+                    noch_drauf = True
+                    break
+
+            # seitlich runtergelaufen → fallen lassen
+            if steht_auf_plattform and not noch_drauf:
+                steht_auf_plattform = False
+                spieler.sprung      = True
+                spieler.sprungzahl  = 0
 
         # Zeichnen
         screen.blit(hintergrund, (0, 0))
@@ -175,14 +192,12 @@ def kampf_starten(screen, level_nr, ist_boss):
         for k in spieler.kugeln:
             k.zeichnen()
 
-        # erst zeichnen → hitbox wird in gegnerImage() aktualisiert
         for g in gegner_liste:
             if g.go:
                 g.gegnerImage()
 
         spieler.spielerImage()
 
-        # dann Treffer prüfen – hitbox stimmt jetzt
         for g in gegner_liste:
             if g.go and not g.dead:
                 g.Bewegungsregler()
@@ -194,7 +209,6 @@ def kampf_starten(screen, level_nr, ist_boss):
         hinweis = klein.render("ESC = zurück zur Map  |  F = Schießen  |  Leertaste = Springen", True, grau)
         screen.blit(hinweis, (20, 60))
 
-        # Gewonnen?
         if all(not g.go for g in gegner_liste):
             gewonnen_text = font.render("Level geschafft!", True, gold)
             screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
@@ -202,7 +216,6 @@ def kampf_starten(screen, level_nr, ist_boss):
             pygame.time.wait(2000)
             return True
 
-        # Verloren?
         if not spieler.go:
             verloren_text = font.render("Du bist gestorben!", True, rot)
             screen.blit(verloren_text, (breite // 2 - verloren_text.get_width() // 2, hoehe // 2))
