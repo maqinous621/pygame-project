@@ -88,19 +88,19 @@ class Spielfigur:
 
     def trefferCheck(self, other):
         for k in self.kugeln:
-            if other.hitbox.colliderect(k.hitbox):
+            if other.hitbox.colliderect(k.hitbox): # Kollision Kugel mit Gegner
                 other.leben -= 1
                 other.getroffen = True
                 other.trefferIndex = 0
                 self.kugeln.remove(k)
-            elif other.kopf.colliderect(k.x-10,k.y-10, 20, 20):
+            elif other.kopf.colliderect(k.x-10,k.y-10, 20, 20): # Kollision Kugel mit Kopf-Hitbox (nur Nahkampf-Gegner)
                 other.leben -= 3
                 other.getroffen = True
                 other.trefferIndex = 0
                 self.kugeln.remove(k)
             if other.leben <= 0:
                 other.dead = True
-        if self.hitbox.colliderect(other.hitbox):
+        if self.hitbox.colliderect(other.hitbox): # Kollision Spieler mit Gegner-Hitbox
                 self.dead = True
 
     def schiessen(self):

@@ -164,7 +164,11 @@ class Gegner:
                     self.go = False
             else:
                 if self.getroffen and len(self.trefferAnimation) > 0:
+                    # frameAnzahl = Anzahl der Bilder in der Trefferanimation (z.B. 5 Bilder)
                     frameAnzahl = len(self.trefferAnimation)
+                    # trefferIndex zählt jeden Frame hoch (60x pro Sekunde)
+                    # // 5 bedeutet: jedes Bild wird 5 Frames lang angezeigt
+                    # min(..., frameAnzahl - 1) verhindert einen IndexError falls trefferIndex zu groß wird
                     bildIndex = min(self.trefferIndex // 5, frameAnzahl - 1)
                     if self.last[0]:
                         self.screen.blit(pygame.transform.flip(pygame.transform.scale(self.trefferAnimation[bildIndex], (self.breite, self.hoehe)), True, False), (self.x, self.y))
@@ -183,7 +187,7 @@ class Gegner:
                         self.screen.blit(pygame.transform.scale(self.laufAnimation[self.laufIndex//len(self.laufAnimation)], (self.breite, self.hoehe)), (self.x, self.y))
         elif self.gegnerArt == "Fernkampf":
             self.hitbox = pygame.Rect(self.x+25, self.y+25, self.breite-50, self.hoehe-50)
-            self.kopf = pygame.Rect(0, 0, 0, 0)
+            self.kopf = pygame.Rect(0, 0, 0, 0) # Fernkampf-Gegner haben keinen separaten Kopf-Hitbox
             if self.dead:
                 frameAnzahl = len(self.totAnimation)
                 bildIndex = min(self.totIndex // 10, frameAnzahl - 1)
