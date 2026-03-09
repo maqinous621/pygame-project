@@ -126,7 +126,7 @@ def kampf_starten(screen, level_nr, ist_boss):
     linke_wand = pygame.Rect(0,0,2,hoehe)
     rechte_wand = pygame.Rect(1918,0,2,hoehe)
 
-    # Screen-Referenz an alle Gegner übergeben
+    # screen-Referenz an alle Gegner übergeben
     for g in gegner_liste:
         g.screen = screen
 
@@ -210,12 +210,6 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         # spieler gezeichnet
         spieler.spielerImage()
-
-        # HUD lever & hinweis
-        level_text = font.render(f"Level {level_nr + 1}{'  –  BOSS!' if ist_boss else ''}", True, weiss)
-        screen.blit(level_text, (20, 20))
-        hinweis = klein.render("ESC = zurück zur Map  |  F = Schießen  |  Leertaste = Springen", True, grau)
-        screen.blit(hinweis, (20, 60))
 
         # gewonnen - alle Gegner besiegt
         alle_tot = all(not g.go for g in gegner_liste)
