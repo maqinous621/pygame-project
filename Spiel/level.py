@@ -29,8 +29,7 @@ class Plattform:
 def kampf_starten(screen, level_nr, ist_boss):
 
     clock = pygame.time.Clock()
-    font  = pygame.font.SysFont("georgia", 28, bold=True)
-    klein = pygame.font.SysFont("georgia", 18)
+    font  = pygame.font.SysFont("arial",48, bold=True)
 
     # Zombie-Animationen laden
     zombie1_walk  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Walk{i}.png")  for i in range(1, 7)]
@@ -80,7 +79,7 @@ def kampf_starten(screen, level_nr, ist_boss):
         0: [],
         1: [Plattform(700, 550, 400, 25)],
         2: [Plattform(400, 550, 250, 25), Plattform(1100, 550, 250, 25)],
-        3: [Plattform(300, 560, 200, 25), Plattform(750, 470, 200, 25), Plattform(1200, 390, 200, 25)],
+        3: [Plattform(300, 560, 200, 25), Plattform(750, 470, 200, 25)],
         4: [],
     }
     plattformen = plattformen_pro_level[level_nr]
@@ -119,9 +118,9 @@ def kampf_starten(screen, level_nr, ist_boss):
     for g in gegner_liste:
         g.screen = screen
 
-    spieler     = Spielfigur(screen, 200, boden_y, 320, 271, [0, 0, 1, 0], 10)
-    linke_wand  = pygame.Rect(0,    0, 2, hoehe)
-    rechte_wand = pygame.Rect(1918, 0, 2, hoehe)
+    spieler= Spielfigur(screen, 200, boden_y, 320, 271, [0, 0, 1, 0], 10)
+    linke_wand= pygame.Rect(0,0, 2, hoehe)
+    rechte_wand = pygame.Rect(1918,0,2, hoehe)
 
     steht_auf_plattform = False  # merkt ob Spieler auf Plattform steht
 
@@ -225,17 +224,56 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         level_text = font.render(f"Level {level_nr + 1}{'  –  BOSS!' if ist_boss else ''}", True, weiss)
         screen.blit(level_text, (20, 20))
-        hinweis = klein.render("ESC = zurück zur Map  |  F = Schießen  |  Leertaste = Springen", True, grau)
-        screen.blit(hinweis, (20, 60))
 
         if all(not g.go for g in gegner_liste):
-            gewonnen_text = font.render("Level geschafft!", True, gold)
-            screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
-            pygame.display.flip()
-            pygame.time.wait(2000)
+            if ist_boss:
+                # Boss besiegt → großer End-Screen
+                screen.fill((0, 0, 0))
+
+                # Meisterschale-Bild (meisterschale.jpg)
+                try:
+                    schale = pygame.image.load("Spiel/Hintergründe/meisterschale.jpg").convert_alpha()
+                    schale = pygame.transform.scale(schale, (500, 400))
+                    screen.blit(schale, (breite // 2 - 250, 150))
+                except:
+                    pass  # kein Bild → nur Text
+
+                titel_font = pygame.font.SysFont("georgia", 70, bold=True)
+                unter_font = pygame.font.SysFont("georgia", 38)
+                mini_font  = pygame.font.SysFont("georgia", 24)
+
+                titel  = titel_font.render("Quest 1892 erfolgreich! 🏆", True, gold)
+                zeile2 = unter_font.render("Die Meisterschale ist zurück in Berlin!", True, weiss)
+                weiter = mini_font.render("[ Beliebige Taste drücken ]", True, grau)
+
+                screen.blit(titel,  (breite // 2 - titel.get_width()  // 2, 600))
+                screen.blit(zeile2, (breite // 2 - zeile2.get_width() // 2, 700))
+                screen.blit(weiter, (breite // 2 - weiter.get_width() // 2, 980))
+
+                pygame.display.flip()
+
+                warten = True
+                while warten:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                            warten = False
+            else:
+                dunkel = pygame.Surface((breite, hoehe), pygame.SRCALPHA)
+                dunkel.fill((0, 0, 0, 160))
+                screen.blit(dunkel, (0, 0))
+                gewonnen_text = font.render("Level geschafft!", True, gold)
+                screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
+                pygame.display.flip()
+                pygame.time.wait(2000)
             return True
 
         if not spieler.go:
+            dunkel = pygame.Surface((breite, hoehe), pygame.SRCALPHA)
+            dunkel.fill((0, 0, 0, 160))
+            screen.blit(dunkel, (0, 0))
             verloren_text = font.render("Du bist gestorben!", True, rot)
             screen.blit(verloren_text, (breite // 2 - verloren_text.get_width() // 2, hoehe // 2))
             pygame.display.flip()

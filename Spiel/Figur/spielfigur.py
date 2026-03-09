@@ -146,9 +146,9 @@ class Spielfigur:
                     self.schiessen_aktiv = False
                     self.ok = True
             else:
-                if self.rechtsIndex == 63: # UNBEDINGT NOCHMAL NACHSCHAUEN WAS DAS BEDEUTET
+                if self.rechtsIndex >= 63:
                     self.rechtsIndex = 0
-                if self.linksIndex == 63:
+                if self.linksIndex >= 63:
                     self.linksIndex = 0
                 if self.standIndex >= 100:
                     self.standIndex = 0
