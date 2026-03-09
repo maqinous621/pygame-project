@@ -231,18 +231,22 @@ def kampf_starten(screen, level_nr, ist_boss):
                 screen.fill((0, 0, 0))
 
                 # Meisterschale-Bild (meisterschale.jpg)
-                try:
-                    schale = pygame.image.load("Spiel/Hintergründe/meisterschale.jpg").convert_alpha()
-                    schale = pygame.transform.scale(schale, (500, 400))
-                    screen.blit(schale, (breite // 2 - 250, 150))
-                except:
-                    pass  # kein Bild → nur Text
+                schale = pygame.image.load("Spiel/Hintergründe/meisterschale.jpg").convert_alpha()
+                schale = pygame.transform.scale(schale, (460, 450))
+                screen.blit(schale, (breite // 2 - 230, 80))
+
+                # Cowgirl links
+                cowgirl = pygame.transform.scale(
+                    pygame.image.load("Spiel/Figur/png/Idle (1).png").convert_alpha(),
+                    (320, 271)
+                )
+                screen.blit(cowgirl, (180, 400))
 
                 titel_font = pygame.font.SysFont("georgia", 70, bold=True)
                 unter_font = pygame.font.SysFont("georgia", 38)
                 mini_font  = pygame.font.SysFont("georgia", 24)
 
-                titel  = titel_font.render("Quest 1892 erfolgreich! 🏆", True, gold)
+                titel  = titel_font.render("Quest 1892 erfolgreich!", True, gold)
                 zeile2 = unter_font.render("Die Meisterschale ist zurück in Berlin!", True, weiss)
                 weiter = mini_font.render("[ Beliebige Taste drücken ]", True, grau)
 
