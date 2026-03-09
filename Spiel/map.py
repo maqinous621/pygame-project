@@ -25,11 +25,11 @@ class Level:
     radius = 55 # kreis für ein level
 
     def __init__(self, name, pos, freigeschaltet, boss):
-        self.name           = name
-        self.pos            = pos
+        self.name= name
+        self.pos= pos
         self.freigeschaltet = freigeschaltet
-        self.boss           = boss
-        self.besucht        = False
+        self.boss = boss
+        self.besucht= False
 
     def zeichnen(self, screen, font, ausgewaehlt):
         x, y = self.pos
@@ -53,12 +53,12 @@ class Level:
         pygame.draw.circle(screen, schwarz, (x, y), self.radius, 2)
 
         # schloss anzeigen wenn level gesperrt
-        if not self.freigeschaltet:
-            schloss = font.render("", True, weiss)
-            screen.blit(schloss, (x - schloss.get_width() // 2, y - schloss.get_height() // 2))
-        else:
-            text = font.render(self.name, True, schwarz)
-            screen.blit(text, (x - text.get_width() // 2, y - text.get_height() // 2))
+#        if not self.freigeschaltet:
+#            schloss = font.render("", True, weiss)
+#            screen.blit(schloss, (x - schloss.get_width() // 2, y - schloss.get_height() // 2))
+#        else:
+#            text = font.render(self.name, True, schwarz)
+#           screen.blit(text, (x - text.get_width() // 2, y - text.get_height() // 2))
 
     def wird_geklickt(self, maus_pos):
         # prüft ob der Mausklick richtig, von claude naachgeschaut

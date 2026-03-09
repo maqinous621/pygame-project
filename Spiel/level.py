@@ -227,10 +227,6 @@ def kampf_starten(screen, level_nr, ist_boss):
             if g.go:
                 g.gegnerImage()
 
-        pygame.draw.rect(screen, (255,0,0), g.hitbox, 5)
-        pygame.draw.rect(screen, (0,255,0), g.kopf, 5)
-        pygame.draw.rect(screen, (0,0,0), spieler.hitbox, 5)    
-
         spieler.spielerImage()
 
         for g in gegner_liste:
