@@ -18,7 +18,7 @@ gold = (212, 175, 55)
 grau = (180, 170, 150)
 
 # schriftarten
-titel_font = pygame.font.SysFont("arial", 72,bold=True)
+titel_font = pygame.font.SysFont("arial", 82,bold=True)
 untertitel_font = pygame.font.SysFont("arial",28)
 button_font = pygame.font.SysFont("arial",34,bold=True)
 lore_font = pygame.font.SysFont("arial", 21)
@@ -57,7 +57,7 @@ class Button:
         self.rect = pygame.Rect(x, y, breite, hoehe)
 
     def zeichnen(self, screen):
-        # Farbe wechseln wenn Maus über dem Button ist
+        # farbe soll gewechselt werden wenn Maus üer button
         maus_pos = pygame.mouse.get_pos()
         farbe = hellbraun if self.rect.collidepoint(maus_pos) else braun
         pygame.draw.rect(screen, farbe, self.rect)
@@ -67,15 +67,15 @@ class Button:
         screen.blit(text_surface, text_rect)
 
     def wurde_geklickt(self, event):
-        # gibt True wenn Button geklickt 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
+        # gibt True wenn Button geklickt (von claude nachgeguckt)
+        if event.type == pygame.MOUSEBUTTONDOWN: # war es ein mausclick?
+            if self.rect.collidepoint(event.pos): # war die maus auf dem button?
                 return True
         return False
 
 
 def hauptmenu():
-    start_button   = Button("Spiel starten", 130, 620, 360, 60)
+    start_button= Button("Spiel starten", 130, 620, 360, 60)
     beenden_button = Button("Beenden", 130, 700, 360, 60)
 
     frame_index = 0
@@ -84,7 +84,7 @@ def hauptmenu():
         # hintergrund (leicht abgedunkelt)
         screen.blit(hintergrund, (0, 0))
         dunkel = pygame.Surface((1920, 1080), pygame.SRCALPHA)
-        dunkel.fill((0, 0, 0, 140))
+        dunkel.fill((0,0,0,140)) # vierter wert ist 140, also so halbtransparent (SRCALPHA)
         screen.blit(dunkel, (0, 0))
 
         # Titel
@@ -109,7 +109,7 @@ def hauptmenu():
         start_button.zeichnen(screen)
         beenden_button.zeichnen(screen)
      
-        # echte Seite - Cowgirl
+        # echts - Cowgirl
         # alle 7 Frames zum nächsten animationsbild 
         frame_timer += 1
         if frame_timer >= 7:

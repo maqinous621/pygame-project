@@ -24,12 +24,12 @@ class Level:
 
     radius = 55 # kreis für ein level
 
-    def __init__(self, daten):
-        self.name = daten["name"]
-        self.pos = daten["pos"]
-        self.freigeschaltet = daten["freigeschaltet"]
-        self.boss = daten["boss"]
-        self.besucht = False
+    def __init__(self, name, pos, freigeschaltet, boss):
+        self.name           = name
+        self.pos            = pos
+        self.freigeschaltet = freigeschaltet
+        self.boss           = boss
+        self.besucht        = False
 
     def zeichnen(self, screen, font, ausgewaehlt):
         x, y = self.pos
@@ -54,7 +54,7 @@ class Level:
 
         # schloss anzeigen wenn level gesperrt
         if not self.freigeschaltet:
-            schloss = font.render("🔒", True, weiss)
+            schloss = font.render("", True, weiss)
             screen.blit(schloss, (x - schloss.get_width() // 2, y - schloss.get_height() // 2))
         else:
             text = font.render(self.name, True, schwarz)
@@ -64,8 +64,7 @@ class Level:
         # prüft ob der Mausklick richtig, von claude naachgeschaut
         mx, my = maus_pos
         lx, ly = self.pos
-        abstand = math.hypot(mx - lx, my - ly)
-        return abstand <= self.radius
+        return math.hypot(mx - lx, my - ly) <= self.radius
 
 
 class Fortschrittsmap:
@@ -76,23 +75,17 @@ class Fortschrittsmap:
             (breite, hoehe) 
         )
         self.font = pygame.font.SysFont("Arial", 14, bold=True)
-        self.titel_font = pygame.font.SysFont("Arial", 42, bold=True)
-        self.info_font = pygame.font.SysFont("Arial", 24)
+        self.titel_font = pygame.font.SysFont("Arial", 72, bold=True)
         self.ausgewaehlt = None
 
         # level-Daten sollen sein: Name, Position auf der Map, freigeschaltet?, Boss?
-        level_daten = [
-            {"name": "Kampf 1", "pos": (240, 540), "freigeschaltet": True,  "boss": False},
-            {"name": "Kampf 2", "pos": (624, 540), "freigeschaltet": False, "boss": False},
-            {"name": "Kampf 3", "pos": (960, 540), "freigeschaltet": False, "boss": False},
-            {"name": "Kampf 4", "pos": (1296, 540), "freigeschaltet": False, "boss": False},
-            {"name": "BOSS", "pos": (1680, 540), "freigeschaltet": False, "boss": True},
+        self.level_liste = [
+            Level("Kampf 1", (240,  540), True,  False),
+            Level("Kampf 2", (624,  540), False, False),
+            Level("Kampf 3", (960,  540), False, False),
+            Level("Kampf 4", (1296, 540), False, False),
+            Level("BOSS",    (1680, 540), False, True),
         ]
-
-        # verbindungen zwischen Leveln (welche sind durch Linien verbunden)
-        self.verbindungen = [(0, 1), (1, 2), (2, 3), (3, 4)]
-        # level-Objekte aus den Daten erstellen, bei claude nachgeguckt
-        self.level_liste = [Level(d) for d in level_daten]
 
     def zeichnen(self):
         # wieder hintergrund mit abdunkelung
@@ -105,59 +98,28 @@ class Fortschrittsmap:
         titel = self.titel_font.render("Quest 1892", True, gold)
         self.screen.blit(titel, (breite // 2 -titel.get_width()//2, 60))
 
-        # verbindungslinien zwischen Leveln
-        for (a, b) in self.verbindungen:
-            pos_a = self.level_liste[a].pos
-            pos_b = self.level_liste[b].pos
-            farbe = gruen if self.level_liste[b].freigeschaltet else grau
+        #  verbindungslinien zwischen den Leveln
+        for i in range(len(self.level_liste) - 1):
+            pos_a = self.level_liste[i].pos
+            pos_b = self.level_liste[i + 1].pos
+            farbe = gruen if self.level_liste[i + 1].freigeschaltet else grau
             pygame.draw.line(self.screen, farbe, pos_a, pos_b, 4)
 
-        # alle Level zeichnen, bei claude nachgeguckt
-        for i, level in enumerate(self.level_liste):
-            level.zeichnen(self.screen, self.font, ausgewaehlt=(self.ausgewaehlt == i))
-        self.info_box_zeichnen()
-
-    def info_box_zeichnen(self):
-        # dunkler Balken unten mit Infos zum ausgewählten Level
-        pygame.draw.rect(self.screen, (30,20,10), (0, hoehe - 100, breite, 100))
-        pygame.draw.line(self.screen, gold, (0, hoehe-100),(breite, hoehe -100),2)
-
-        if self.ausgewaehlt is not None:
-            level = self.level_liste[self.ausgewaehlt]
-            if level.freigeschaltet:
-                text = f"▶  {level.name}  –  Klicke erneut zum Starten!"
-                farbe = gold
-            else:
-                text = f"🔒  {level.name}  –  Noch gesperrt. Besiege zuerst das vorherige Level!"
-                farbe = grau
-        else:
-            text = "Klicke auf ein Level um es auszuwählen."
-            farbe = weiss
-
-        info = self.info_font.render(text, True, farbe)
-        self.screen.blit(info, (40, hoehe - 65))
-
-    def klick_verarbeiten(self, maus_pos):
-        # soll gucken welches Level geklickt wurde
         for i, lv in enumerate(self.level_liste):
-            if lv.wird_geklickt(maus_pos):
-                if self.ausgewaehlt == i and lv.freigeschaltet:
-                    # zweiter Klick auf selbe Level soll starten
-                    return i
-                else:
-                    # erstes Mal klicken soll nur auswählen
-                    self.ausgewaehlt = i
-                    return None
-        # wenn Klick ins Leere - auswahl aufgehoben
-        self.ausgewaehlt = None
+            lv.zeichnen(self.screen, self.font, ausgewaehlt=(self.ausgewaehlt == i))
+
+    # ein Klick startet direkt
+    def klick_verarbeiten(self, maus_pos):
+        for i, lv in enumerate(self.level_liste):
+            if lv.wird_geklickt(maus_pos) and lv.freigeschaltet:
+                return i
         return None
 
+    # level abschliessen
     def level_abschliessen(self, index):
-        # level als "besucht" markieren & nächstes freischalten
         self.level_liste[index].besucht = True
-        for (a, b) in self.verbindungen:
-            if a == index:
-                self.level_liste[b].freigeschaltet = True
+        if index + 1 < len(self.level_liste):
+            self.level_liste[index + 1].freigeschaltet = True
 
 
 def main(screen):
