@@ -25,11 +25,11 @@ class Level:
     radius = 55 # kreis für ein level
 
     def __init__(self, name, pos, freigeschaltet, boss):
-        self.name           = name
-        self.pos            = pos
+        self.name= name
+        self.pos= pos
         self.freigeschaltet = freigeschaltet
-        self.boss           = boss
-        self.besucht        = False
+        self.boss = boss
+        self.besucht= False
 
     def zeichnen(self, screen, font, ausgewaehlt):
         x, y = self.pos
