@@ -32,8 +32,9 @@ class Plattform:
 def level_daten_laden(level_nr):
 
     # zombie-Animationen
-    zombie_run  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Run{i}.png")  for i in range(1, 11)]
-    zombie_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png") for i in range(1, 9)]
+    zombie_run  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Walk{i}.png").convert_alpha()  for i in range(1, 7)]
+    zombie_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png").convert_alpha() for i in range(1, 9)]
+    zombie_hit = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Hurt{i}.png").convert_alpha() for i in range(1, 6)]
     # hintergründe
     hintergrund_pfade = {
         0: "Spiel/Hintergründe/4/background.png",
@@ -66,39 +67,39 @@ def level_daten_laden(level_nr):
         0: [  # Kampf 1 - schwacher Zombie
             Gegner(None, "Nahkampf", 1800, boden_y - 30, 100, 1850, 137, 290,
                    [1, 0, 0, 0], 3, 2,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
         ],
         1: [  # Kampf 2: zwei Zombies
             Gegner(None, "Nahkampf", 1200, boden_y, 100, 1500, 137, 290,
                    [1, 0, 0, 0], 4, 4,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
             Gegner(None, "Nahkampf", 1700, boden_y, 900, 1850, 137, 290,
                    [1, 0, 0, 0], 4, 2,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
         ],
         2: [  # Kampf 3: zwei stärkere Zombies
             Gegner(None, "Nahkampf", 1200, boden_y, 100, 1500, 137, 290,
                    [1, 0, 0, 0], 4, 4,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
             Gegner(None, "Nahkampf", 1700, boden_y, 900, 1850, 137, 290,
                    [1, 0, 0, 0], 4, 2,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
         ],
         3: [  # Kampf 4: drei Zombies
             Gegner(None, "Nahkampf", 700, boden_y, 100, 1100, 137, 290,
                    [0, 1, 0, 0], 5, 4,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
             Gegner(None, "Nahkampf", 1200, boden_y, 700, 1600, 137, 290,
                    [1, 0, 0, 0], 5, 4,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
             Gegner(None, "Nahkampf", 1700, boden_y, 1200, 1850, 137, 290,
                    [1, 0, 0, 0], 5, 4,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
         ],
         4: [  # Boss: ein sehr starker Zombie
             Gegner(None, "Nahkampf", 1500, boden_y, 100, 1850, 200, 400,
                    [1, 0, 0, 0], 4, 12,
-                   laufAnimation=zombie_run, totAnimation=zombie_dead),
+                   laufAnimation=zombie_run, totAnimation=zombie_dead, trefferAnimation=zombie_hit),
         ],
     }
 
@@ -136,8 +137,6 @@ def kampf_starten(screen, level_nr, ist_boss):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    spieler.startSprung()
                 if event.key == pygame.K_ESCAPE:
                     return None  # zurück zur Map (ohne Ergebnis)
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -189,7 +188,7 @@ def kampf_starten(screen, level_nr, ist_boss):
             if g.go:
                 if not g.dead:
                     g.Bewegungsregler()
-                    g.bewegen()
+                    g.bewegen(spieler)
                     spieler.trefferCheck(g)
 
         #zeichnen

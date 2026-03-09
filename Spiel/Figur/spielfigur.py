@@ -16,6 +16,7 @@ class Spielfigur:
         self.standIndex = 0
         self.totIndex = 0
         self.geschwindigkeit = geschwindigkeit
+        self.sprunggeschwindigkeit = geschwindigkeit + 4 # wird nur für die Dauer des Sprungs verwendet, damit die Figur während des Sprungs schneller ist
         self.sprung = False
         self.sprungzahl = 13
         self.kugeln = []
@@ -36,16 +37,20 @@ class Spielfigur:
         self.schiessenLinks = [pygame.image.load(f"Spiel/Figur/png/linksShoot ({i}).png").convert_alpha() for i in range(1, 4)]
 
     def laufen(self, liste):
+        if self.sprung:
+            speed = self.sprunggeschwindigkeit
+        else:
+            speed = self.geschwindigkeit
         if liste[0]:
             if self.richtung != [1, 0, 0, 0]: # Prüfen ob die Richtung geändert wurde
                 self.resetIndex()
-            self.x -= self.geschwindigkeit
+            self.x -= speed
             self.richtung = [1, 0, 0, 0]
             self.linksIndex += 1
         if liste[1]:
             if self.richtung != [0, 1, 0, 0]:
                 self.resetIndex()
-            self.x += self.geschwindigkeit
+            self.x += speed
             self.richtung = [0, 1, 0 ,0]
             self.rechtsIndex += 1
 
@@ -54,7 +59,6 @@ class Spielfigur:
             if self.richtung != [0, 0, 0, 1]:
                 self.resetIndex()
             self.sprung = True
-            self.geschwindigkeit += 4
             self.richtung = [0, 0, 0, 1]
             # Sprung Sound hinzufügen
 
@@ -70,7 +74,6 @@ class Spielfigur:
             else:
                 self.sprung = False
                 self.sprungzahl = 13
-                self.geschwindigkeit -= 4
 
     def stehen(self):
         if not self.sprung:
@@ -344,7 +347,7 @@ class Gegner:
                 else:
                     self.go = False
             else:
-                if self.getroffen:
+                if self.getroffen and len(self.trefferAnimation) > 0:
                     frameAnzahl = len(self.trefferAnimation)
                     bildIndex = min(self.trefferIndex // 5, frameAnzahl - 1)
                     if self.last[0]:
