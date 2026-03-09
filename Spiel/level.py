@@ -101,9 +101,9 @@ def kampf_starten(screen, level_nr, ist_boss):
         ],
         1: [
             Gegner(None, "Nahkampf", 1200, 670, 100, 1500, 137, 290,
-                   [1, 0, 0, 0], 4, 1, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
             Gegner(None, "Nahkampf", 1700, 670, 900, 1850, 137, 290,
-                   [1, 0, 0, 0], 4, 1, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
         ],
         2: [
             Gegner(None, "Nahkampf", 900, 670, 100, 1300, 137, 290,
@@ -115,10 +115,10 @@ def kampf_starten(screen, level_nr, ist_boss):
         ],
         3: [
             Gegner(None, "Nahkampf", 700,  670, 100,  1100, 137, 290,
-                   [0, 1, 0, 0], 5, 1, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+                   [0, 1, 0, 0], 5, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
             Gegner(None, "Nahkampf", 1200, 670, 700,  1600, 137, 290,
-                   [1, 0, 0, 0], 5, 1, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
-            #Gegner(None, "Fliegend", 1700, 300, 100, 1850, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt),
+                   [1, 0, 0, 0], 5, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            Gegner(None, "Fliegend", 1700, 300, 100, 1850, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt),
         ],
         4: [
             Gegner(None, "Nahkampf", 1200, 710, 300,  1400, 137, 290,

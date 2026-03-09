@@ -57,7 +57,7 @@ class Level:
         screen.blit(text, (x - text.get_width() // 2, y - text.get_height() // 2))
 
     def wird_geklickt(self, maus_pos):
-        # prüft ob der Mausklick richtig, von claude naachgeschaut
+        # prüft ob der Mausklick richtig, von claude nachgeschaut
         mx, my = maus_pos
         lx, ly = self.pos
         return math.hypot(mx - lx, my - ly) <= self.radius
@@ -66,6 +66,7 @@ class Level:
 class Fortschrittsmap:
     def __init__(self, screen):
         self.screen = screen
+        #hintergrund auf vollbild skalieren (wie bei main.py auch schon)
         self.hintergrund = pygame.transform.scale(
             pygame.image.load("Spiel/Hintergründe/2/background.png").convert(),
             (breite, hoehe) 
@@ -74,13 +75,13 @@ class Fortschrittsmap:
         self.titel_font = pygame.font.SysFont("Arial", 72, bold=True)
         self.ausgewaehlt = None
 
-        # level-Daten sollen sein: Name, Position auf der Map, freigeschaltet?, Boss?
+        # level-Daten sollen sein: name, Position auf Map, freigeschaltet?, boss?
         self.level_liste = [
             Level("Kampf 1", (240,  540), True,  False),
             Level("Kampf 2", (624,  540), False, False),
             Level("Kampf 3", (960,  540), False, False),
             Level("Kampf 4", (1296, 540), False, False),
-            Level("BOSS",    (1680, 540), False, True),
+            Level("BOSS",(1680, 540), False, True),
         ]
 
     def zeichnen(self):
