@@ -147,18 +147,7 @@ def main(screen):
                     
                         # wenn man boss besiegt dann hat man gewonnen
                         if lv.boss:
-                            screen.fill(schwarz)
-                            font = pygame.font.SysFont("Arial", 64, bold=True)
-                            txt = font.render("🏆 Du hast den Schatz gefunden!")
-                            screen.blit(txt, (breite //2 - txt.get_width()// 2, hoehe // 2-40))
-                            pygame.display.flip()
-                            pygame.time.wait(4000)
-                            pygame.time.wait(33)
                             return # zurück zu hauptmenü
-                        
-
         karte.zeichnen()
         pygame.display.flip()
         clock.tick(60)
-
-
