@@ -12,19 +12,39 @@ def zeichnen():
     screen.blit(hintergrund, (0,0))
     for k in spieler1.kugeln:
         k.zeichnen()
+    for k in gegner.kugeln:  # <- hinzufügen
+        k.zeichnen()
     # pygame.draw.rect(screen, (255,0,0), zombie.hitbox, 5)
     # pygame.draw.rect(screen, (0,0,0), spieler1.hitbox, 5)
     # pygame.draw.rect(screen, (0,255,0), zombie.kopf, 5)
+    # pygame.draw.rect(screen, (0,255,0), gegner.hitbox, 5)
     #for p in plattformen:
     #    p.pzeichnen()
-    zombie.gegnerImage()
+    gegner.gegnerImage()
     spieler1.spielerImage()
     pygame.display.update()
 
 linkeWand = pygame.draw.rect(screen, (0,0,0), (0,0,2,1100), 0)
 rechteWand = pygame.draw.rect(screen, (0,0,0), (1914,0,2,1100), 0)
 spieler1 = Spielfigur(screen, 200, 730, 320.5, 271, [0,0,1,0], 10)
-zombie = Gegner(screen, "Nahkampf", 1800, 700, 100, 1850, 137.25, 290.25, [1,0,0,0], 3, 6, [pygame.image.load("Spiel/Figur/png/Walk1.png"), pygame.image.load("Spiel/Figur/png/Walk2.png"), pygame.image.load("Spiel/Figur/png/Walk3.png"), pygame.image.load("Spiel/Figur/png/Walk4.png"), pygame.image.load("Spiel/Figur/png/Walk5.png"), pygame.image.load("Spiel/Figur/png/Walk6.png")], [], [], [pygame.image.load("Spiel/Figur/png/Dead1.png"), pygame.image.load("Spiel/Figur/png/Dead2.png"), pygame.image.load("Spiel/Figur/png/Dead3.png"), pygame.image.load("Spiel/Figur/png/Dead4.png"), pygame.image.load("Spiel/Figur/png/Dead5.png"), pygame.image.load("Spiel/Figur/png/Dead6.png"), pygame.image.load("Spiel/Figur/png/Dead7.png")], [])
+gegner = Gegner(screen, "Fliegend", 900, 300, 100, 1700, 200, 200, [1,0,0,0], 3, 6,"Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/projectile.png", [pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack1.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack2.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack3.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack4.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack5.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack6.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack7.png"), pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Attack8.png")],
+    [],  # laufAnimation
+    [],  # standAnimation
+    [pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Flying1.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Flying2.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Flying3.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Flying4.png")],  # sprungAnimation (hier Flug)
+    [pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH1.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH2.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH3.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH4.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH5.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH6.png"),
+     pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/DEATH7.png")],  # totAnimation
+    [pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Hurt1.png"),
+    pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Hurt2.png"),
+    pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Hurt3.png"),
+    pygame.image.load("Spiel/Gegner/PNG/Flying Demon 2D Pixel Art/Sprites/without_outline/Hurt4.png")])  # trefferAnimation
 verloren = False
 gewonnen = False
 #plattformen = [Plattform(200, 300, plattformBild), Plattform(600, 350, plattformBild)]
@@ -65,9 +85,10 @@ while go:
     if not gedrueckt[pygame.K_f]:
         spieler1.ok = True
     
-    zombie.bewegen()
-    zombie.Bewegungsregler()
-    spieler1.trefferCheck(zombie)
+    gegner.bewegen(spieler1)
+    gegner.Bewegungsregler()
+    spieler1.trefferCheck(gegner)
+    gegner.kugelverhalten(spieler1)
 
     zeichnen()
     clock.tick(60)
