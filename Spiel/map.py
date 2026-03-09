@@ -8,7 +8,7 @@ pygame.init()
 breite = 1920
 hoehe = 1080
 
-# farben
+# farben, wieder von claude
 weiss = (255, 255, 255)
 schwarz = (0, 0, 0)
 grau = (150, 150, 150)
@@ -26,10 +26,10 @@ class Level:
 
     def __init__(self, name, pos, freigeschaltet, boss):
         self.name= name
-        self.pos= pos
+        self.pos= pos # (x, y) position auf der map
         self.freigeschaltet = freigeschaltet
         self.boss = boss
-        self.besucht= False
+        self.besucht= False # wird true wenn level erfolgreich abgeschlossen
 
     def zeichnen(self, screen, font, ausgewaehlt):
         x, y = self.pos
@@ -48,17 +48,13 @@ class Level:
         if ausgewaehlt:
             pygame.draw.circle(screen, gold, (x, y), self.radius + 8)
 
-        # Kreis und Umrandung zeichnen
+        #kreis und schwarze umrandung zeichnen
         pygame.draw.circle(screen, farbe, (x, y), self.radius)
         pygame.draw.circle(screen, schwarz, (x, y), self.radius, 2)
 
-        # schloss anzeigen wenn level gesperrt
-#        if not self.freigeschaltet:
-#            schloss = font.render("", True, weiss)
-#            screen.blit(schloss, (x - schloss.get_width() // 2, y - schloss.get_height() // 2))
-#        else:
-#            text = font.render(self.name, True, schwarz)
-#           screen.blit(text, (x - text.get_width() // 2, y - text.get_height() // 2))
+        # namen von leveln "zeichnen"
+        text = font.render(self.name, True, schwarz)
+        screen.blit(text, (x - text.get_width() // 2, y - text.get_height() // 2))
 
     def wird_geklickt(self, maus_pos):
         # prüft ob der Mausklick richtig, von claude naachgeschaut
