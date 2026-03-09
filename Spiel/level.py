@@ -1,6 +1,7 @@
 import pygame
 import sys
-from Figur.spielfigur import Spielfigur, Gegner
+from Figur.spielfigur import Spielfigur
+from Gegner.gegner import Gegner
 
 breite   = 1920
 hoehe    = 1080
@@ -33,8 +34,17 @@ def kampf_starten(screen, level_nr, ist_boss):
     klein = pygame.font.SysFont("georgia", 18)
 
     # Zombie-Animationen laden
-    zombie_run  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Run{i}.png")  for i in range(1, 11)]
-    zombie_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png") for i in range(1, 9)]
+    zombie1_walk  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Walk{i}.png")  for i in range(1, 7)]
+    zombie1_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png") for i in range(1, 9)]
+    zombie1_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Hurt{i}.png") for i in range(1, 6)]
+    zombie2_walk  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie2/animation/Walk{i}.png")  for i in range(1, 7)]
+    zombie2_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie2/animation/Dead{i}.png") for i in range(1, 9)]
+    zombie2_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie2/animation/Hurt{i}.png") for i in range(1, 6)]
+
+    # Demon-Animationen laden
+    demon_flying = [pygame.image.load(f"Spiel/Gegner/PNG/Demon/Sprites/without_outline/Flying{i}.png") for i in range(1, 5)]
+    demon_death = [pygame.image.load(f"Spiel/Gegner/PNG/Demon/Sprites/without_outline/DEATH{i}.png") for i in range(1, 8)]
+    demon_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Demon/Sprites/without_outline/Hurt{i}.png") for i in range(1, 5)]
 
     # Hintergrund je nach Level
     hintergrund_pfade = {
@@ -64,31 +74,31 @@ def kampf_starten(screen, level_nr, ist_boss):
     gegner_pro_level = {
         0: [
             Gegner(None, "Nahkampf", 1800, gegner_y, 100, 1850, 137, 290,
-                   [1, 0, 0, 0], 3, 2, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 3, 2, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
         ],
         1: [
             Gegner(None, "Nahkampf", 1200, gegner_y, 100, 1500, 137, 290,
-                   [1, 0, 0, 0], 4, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 4, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
             Gegner(None, "Nahkampf", 1700, gegner_y, 900, 1850, 137, 290,
-                   [1, 0, 0, 0], 4, 2, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 4, 2, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
         ],
         2: [
             Gegner(None, "Nahkampf", 900,  gegner_y, 100, 1300, 137, 290,
-                   [0, 1, 0, 0], 5, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [0, 1, 0, 0], 5, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
             Gegner(None, "Nahkampf", 1500, gegner_y, 800, 1850, 137, 290,
-                   [1, 0, 0, 0], 5, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 5, 4, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
         ],
         3: [
             Gegner(None, "Nahkampf", 700,  gegner_y, 100,  1100, 137, 290,
-                   [0, 1, 0, 0], 5, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [0, 1, 0, 0], 5, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
             Gegner(None, "Nahkampf", 1200, gegner_y, 700,  1600, 137, 290,
-                   [1, 0, 0, 0], 5, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 5, 4, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
             Gegner(None, "Nahkampf", 1700, gegner_y, 1200, 1850, 137, 290,
-                   [1, 0, 0, 0], 5, 4, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 5, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
         ],
         4: [
             Gegner(None, "Nahkampf", 1500, gegner_y, 100, 1850, 200, 400,
-                   [1, 0, 0, 0], 4, 12, None, [], zombie_run, [], [], zombie_dead),
+                   [1, 0, 0, 0], 4, 12, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
         ],
     }
     gegner_liste = gegner_pro_level[level_nr]
