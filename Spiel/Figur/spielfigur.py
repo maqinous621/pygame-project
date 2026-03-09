@@ -186,7 +186,7 @@ class Kugel:
         elif last[1]:
             self.x += 300
             self.geschwindigkeit = geschwindigkeit
-        self.y += 123
+        self.y += 50
         self.hitbox = pygame.Rect(self.x-10, self.y-10, 20, 20)
 
     def bewegen(self):
@@ -321,8 +321,8 @@ class Gegner:
 
     def gegnerImage(self):  
         if self.gegnerArt == "Nahkampf":
-            self.hitbox = pygame.Rect(self.x+50, self.y+150, self.breite-70, self.hoehe)
-            self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-200)
+            self.hitbox = pygame.Rect(self.x+50, self.y+130, self.breite-70, self.hoehe)
+            self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-130)
             if self.dead: # mit Hilfe von Claude.Ai erstellt, da die Tot-Animation des Zombies nicht richtig angezeigt wurde
                 frameAnzahl = len(self.totAnimation)
                 bildIndex = min(self.totIndex // 10, frameAnzahl - 1)
