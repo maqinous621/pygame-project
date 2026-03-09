@@ -62,7 +62,7 @@ class Spielfigur:
             self.richtung = [0, 0, 0, 1]
             # Sprung Sound hinzufügen
 
-    def updateSprung(self):
+    def updateSprung(self): # orientiert an https://www.youtube.com/watch?v=ODykzTEzDx8&list=PLjuHXsDGkbTSpTMJ4MXTiQXN4AeOzpu1w&index=2 (min 7:48 - 11:07)
         if self.sprung:
             if self.sprungzahl >= -13:
                 self.sprungIndex += 1
@@ -100,10 +100,8 @@ class Spielfigur:
                 self.kugeln.remove(k)
             if other.leben <= 0:
                 other.dead = True
-                # Treffer Sound hinzufügen
         if self.hitbox.colliderect(other.hitbox):
                 self.dead = True
-                # Tod Sound hinzufügen
 
     def schiessen(self):
         if self.ok and not self.schiessen_aktiv:
@@ -196,5 +194,4 @@ class Kugel:
     def zeichnen(self):
         pygame.draw.circle(self.screen, (0,0,0), (self.x, self.y), 10, 0)
 
-##############################################################################################################
 

@@ -5,8 +5,6 @@ from Gegner.gegner import Gegner
 
 breite   = 1920
 hoehe    = 1080
-boden_y  = 690
-gegner_y = boden_y - 30
 
 schwarz = (0, 0, 0)
 weiss   = (255, 255, 255)
@@ -32,6 +30,16 @@ def kampf_starten(screen, level_nr, ist_boss):
     font  = pygame.font.SysFont("georgia", 28, bold=True)
     klein = pygame.font.SysFont("georgia", 18)
 
+    boden_pro_level = {
+        0: 690,
+        1: 690,
+        2: 690,
+        3: 690,
+        4: 740,
+    }
+    aktueller_boden = boden_pro_level[level_nr]
+
+
     # Zombie-Animationen laden
     zombie1_walk  = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Walk{i}.png")  for i in range(1, 7)]
     zombie1_dead = [pygame.image.load(f"Spiel/Gegner/PNG/Zombie1/animation/Dead{i}.png") for i in range(1, 9)]
@@ -48,17 +56,19 @@ def kampf_starten(screen, level_nr, ist_boss):
     demon_projectile = pygame.image.load("Spiel/Gegner/PNG/Demon/Sprites/projectile.png")
 
     # Wraith-Animationen laden
-    wraith_feuerball = "Spiel/Gegner/PNG/Wraith3/PNG Sequences/Feuerball.png"
+    wraith3_feuerball = "Spiel/Gegner/PNG/Wraith3/PNG Sequences/Feuerball.png"
     wraith3_stand = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith3/PNG Sequences/Idle/Wraith_03_Idle_{i:03d}.png") for i in range(0, 12)]
     wraith3_cast = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith3/PNG Sequences/Casting Spells/Wraith_03_Casting Spells_{i:03d}.png") for i in range(0, 18)]
     wraith3_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith3/PNG Sequences/Hurt/Wraith_03_Hurt_{i:03d}.png") for i in range(0, 12)]
     wraith3_dying = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith3/PNG Sequences/Dying/Wraith_03_Dying_{i:03d}.png") for i in range(0, 15)]
 
+    wraith1_feuerball = "Spiel/Gegner/PNG/Wraith1/PNG Sequences/FeuerballBlau.png"
     wraith1_stand = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith1/PNG Sequences/Idle/Wraith_01_Idle_{i:03d}.png") for i in range(0, 12)]
     wraith1_cast = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith1/PNG Sequences/Casting Spells/Wraith_01_Casting Spells_{i:03d}.png") for i in range(0, 18)]
     wraith1_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith1/PNG Sequences/Hurt/Wraith_01_Hurt_{i:03d}.png") for i in range(0, 12)]
     wraith1_dying = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith1/PNG Sequences/Dying/Wraith_01_Dying_{i:03d}.png") for i in range(0, 15)]
 
+    wraith2_feuerball = "Spiel/Gegner/PNG/Wraith2/PNG Sequences/FeuerballOrange.png"
     wraith2_stand = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Idle/Wraith_02_Idle_{i:03d}.png") for i in range(0, 12)]
     wraith2_cast = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Casting Spells/Wraith_02_Casting Spells_{i:03d}.png") for i in range(0, 18)]
     wraith2_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Hurt/Wraith_02_Hurt_{i:03d}.png") for i in range(0, 12)]
@@ -87,31 +97,35 @@ def kampf_starten(screen, level_nr, ist_boss):
 
     gegner_pro_level = {
         0: [
-            Gegner(None, "Nahkampf", 1800, gegner_y, 100, 1850, 137, 290,
-                   [1, 0, 0, 0], 3, 2, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1800, 690, 100, 1850, 137, 290,
+                   [1, 0, 0, 0], 3, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
         ],
         1: [
-            Gegner(None, "Nahkampf", 1200, gegner_y, 100, 1500, 137, 290,
-                   [1, 0, 0, 0], 4, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
-            Gegner(None, "Nahkampf", 1700, gegner_y, 900, 1850, 137, 290,
-                   [1, 0, 0, 0], 4, 2, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            Gegner(None, "Nahkampf", 1200, 690, 100, 1500, 137, 290,
+                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1700, 690, 900, 1850, 137, 290,
+                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
         ],
         2: [
-            Gegner(None, "Nahkampf", 900,  gegner_y, 100, 1300, 137, 290,
-                   [0, 1, 0, 0], 5, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
-            Gegner(None, "Fernkampf", 1700, gegner_y, 800, 1850, 260, 210,
-                   [1, 0, 0, 0], 5, 4, projektil=wraith_feuerball,standAnimation=wraith3_stand, angriffAnimation=wraith3_cast, totAnimation=wraith3_dying, trefferAnimation=wraith3_hurt),
+            Gegner(None, "Nahkampf", 900, 690, 100, 1300, 137, 290,
+                   [0, 1, 0, 0], 5, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Fernkampf", 1700, 690, 800, 1850, 260, 210,
+                   [1, 0, 0, 0], 5, 6, projektil=wraith3_feuerball,standAnimation=wraith3_stand, angriffAnimation=wraith3_cast, totAnimation=wraith3_dying, trefferAnimation=wraith3_hurt),
         ],
         3: [
-            Gegner(None, "Nahkampf", 700,  gegner_y, 100,  1100, 137, 290,
-                   [0, 1, 0, 0], 5, 4, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
-            Gegner(None, "Nahkampf", 1200, gegner_y, 700,  1600, 137, 290,
-                   [1, 0, 0, 0], 5, 4, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            Gegner(None, "Nahkampf", 700,  690, 100,  1100, 137, 290,
+                   [0, 1, 0, 0], 5, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1200, 690, 700,  1600, 137, 290,
+                   [1, 0, 0, 0], 5, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
             Gegner(None, "Fliegend", 1700, 300, 100, 1850, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt),
         ],
         4: [
-            Gegner(None, "Nahkampf", 1500, gegner_y, 100, 1850, 200, 400,
-                   [1, 0, 0, 0], 4, 12, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1200, 690, 300,  1400, 137, 290,
+                   [1, 0, 0, 0], 5, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            Gegner(None, "Fernkampf", 1700, 400, 800, 1800, 260, 210,
+                   [1, 0, 0, 0], 5, 6, projektil=wraith1_feuerball,standAnimation=wraith1_stand, angriffAnimation=wraith1_cast, totAnimation=wraith1_dying, trefferAnimation=wraith1_hurt),
+            Gegner(None, "Fernkampf", 1700, 750, 400, 1850, 260, 210,
+                   [1, 0, 0, 0], 5, 6, projektil=wraith2_feuerball,standAnimation=wraith2_stand, angriffAnimation=wraith2_cast, totAnimation=wraith2_dying, trefferAnimation=wraith2_hurt)
         ],
     }
     gegner_liste = gegner_pro_level[level_nr]
@@ -119,7 +133,7 @@ def kampf_starten(screen, level_nr, ist_boss):
     for g in gegner_liste:
         g.screen = screen
 
-    spieler     = Spielfigur(screen, 200, boden_y, 320, 271, [0, 0, 1, 0], 10)
+    spieler     = Spielfigur(screen, 200, aktueller_boden, 320, 271, [0, 0, 1, 0], 10)
     linke_wand  = pygame.Rect(0,    0, 2, hoehe)
     rechte_wand = pygame.Rect(1918, 0, 2, hoehe)
 
@@ -162,13 +176,13 @@ def kampf_starten(screen, level_nr, ist_boss):
         faellt = spieler.y > vorheriges_y
 
         # wenn sprung=False aber Spieler nicht auf Boden und nicht auf Plattform → fallen
-        if not spieler.sprung and spieler.y < boden_y and not steht_auf_plattform:
+        if not spieler.sprung and spieler.y < aktueller_boden and not steht_auf_plattform:
             spieler.sprung     = True
             spieler.sprungzahl = 0
 
         # Boden
-        if spieler.y >= boden_y:
-            spieler.y           = boden_y
+        if spieler.y >= aktueller_boden:
+            spieler.y           = aktueller_boden
             spieler.sprung      = False
             spieler.sprungzahl  = 13
             steht_auf_plattform = False
@@ -213,6 +227,10 @@ def kampf_starten(screen, level_nr, ist_boss):
         for g in gegner_liste:
             if g.go:
                 g.gegnerImage()
+
+        pygame.draw.rect(screen, (255,0,0), g.hitbox, 5)
+        pygame.draw.rect(screen, (0,255,0), g.kopf, 5)
+        pygame.draw.rect(screen, (0,0,0), spieler.hitbox, 5)    
 
         spieler.spielerImage()
 

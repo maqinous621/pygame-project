@@ -137,7 +137,7 @@ class Gegner:
 
     def gegnerImage(self):  
         if self.gegnerArt == "Nahkampf":
-            self.hitbox = pygame.Rect(self.x+50, self.y+150, self.breite-70, self.hoehe)
+            self.hitbox = pygame.Rect(self.x+50, self.y+80, self.breite-70, self.hoehe)
             self.kopf = pygame.Rect(self.x+30, self.y, self.breite-70, self.hoehe-200)
             if self.dead: # mit Hilfe von Claude.Ai erstellt, da die Tot-Animation des Zombies nicht richtig angezeigt wurde
                 frameAnzahl = len(self.totAnimation)
