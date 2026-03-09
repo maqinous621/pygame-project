@@ -186,7 +186,7 @@ class Kugel:
         elif last[1]:
             self.x += 300
             self.geschwindigkeit = geschwindigkeit
-        self.y += 123
+        self.y += 50
         self.hitbox = pygame.Rect(self.x-10, self.y-10, 20, 20)
 
     def bewegen(self):
