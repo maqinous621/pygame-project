@@ -96,35 +96,38 @@ def kampf_starten(screen, level_nr, ist_boss):
 
     gegner_pro_level = {
         0: [
-            Gegner(None, "Nahkampf", 1800, 690, 100, 1850, 137, 290,
+            Gegner(None, "Nahkampf", 1800, 670, 100, 1850, 137, 290,
                    [1, 0, 0, 0], 3, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
         ],
         1: [
-            Gegner(None, "Nahkampf", 1200, 690, 100, 1500, 137, 290,
-                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
-            Gegner(None, "Nahkampf", 1700, 690, 900, 1850, 137, 290,
-                   [1, 0, 0, 0], 4, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            Gegner(None, "Nahkampf", 1200, 670, 100, 1500, 137, 290,
+                   [1, 0, 0, 0], 4, 1, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1700, 670, 900, 1850, 137, 290,
+                   [1, 0, 0, 0], 4, 1, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
         ],
         2: [
-            Gegner(None, "Nahkampf", 900, 690, 100, 1300, 137, 290,
+            Gegner(None, "Nahkampf", 900, 670, 100, 1300, 137, 290,
                    [0, 1, 0, 0], 5, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Fernkampf", 1700, 350, 800, 1800, 260, 210,
+                   [1, 0, 0, 0], 5, 6, projektil=wraith1_feuerball,standAnimation=wraith1_stand, angriffAnimation=wraith1_cast, totAnimation=wraith1_dying, trefferAnimation=wraith1_hurt),
             Gegner(None, "Fernkampf", 1700, 690, 800, 1850, 260, 210,
-                   [1, 0, 0, 0], 5, 6, projektil=wraith3_feuerball,standAnimation=wraith3_stand, angriffAnimation=wraith3_cast, totAnimation=wraith3_dying, trefferAnimation=wraith3_hurt),
+                   [1, 0, 0, 0], 5, 6, projektil=wraith3_feuerball,standAnimation=wraith3_stand, angriffAnimation=wraith3_cast, totAnimation=wraith3_dying, trefferAnimation=wraith3_hurt)
         ],
         3: [
-            Gegner(None, "Nahkampf", 700,  690, 100,  1100, 137, 290,
-                   [0, 1, 0, 0], 5, 6, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
-            Gegner(None, "Nahkampf", 1200, 690, 700,  1600, 137, 290,
-                   [1, 0, 0, 0], 5, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
-            Gegner(None, "Fliegend", 1700, 300, 100, 1850, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt),
+            Gegner(None, "Nahkampf", 700,  670, 100,  1100, 137, 290,
+                   [0, 1, 0, 0], 5, 1, laufAnimation=zombie1_walk, totAnimation=zombie1_dead, trefferAnimation=zombie1_hurt),
+            Gegner(None, "Nahkampf", 1200, 670, 700,  1600, 137, 290,
+                   [1, 0, 0, 0], 5, 1, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
+            #Gegner(None, "Fliegend", 1700, 300, 100, 1850, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt),
         ],
         4: [
-            Gegner(None, "Nahkampf", 1200, 690, 300,  1400, 137, 290,
+            Gegner(None, "Nahkampf", 1200, 710, 300,  1400, 137, 290,
                    [1, 0, 0, 0], 5, 6, laufAnimation=zombie2_walk, totAnimation=zombie2_dead, trefferAnimation=zombie2_hurt),
-            Gegner(None, "Fernkampf", 1700, 400, 800, 1800, 260, 210,
+            Gegner(None, "Fernkampf", 1700, 350, 800, 1800, 260, 210,
                    [1, 0, 0, 0], 5, 6, projektil=wraith1_feuerball,standAnimation=wraith1_stand, angriffAnimation=wraith1_cast, totAnimation=wraith1_dying, trefferAnimation=wraith1_hurt),
             Gegner(None, "Fernkampf", 1700, 750, 400, 1850, 260, 210,
-                   [1, 0, 0, 0], 5, 6, projektil=wraith2_feuerball,standAnimation=wraith2_stand, angriffAnimation=wraith2_cast, totAnimation=wraith2_dying, trefferAnimation=wraith2_hurt)
+                   [1, 0, 0, 0], 5, 6, projektil=wraith2_feuerball,standAnimation=wraith2_stand, angriffAnimation=wraith2_cast, totAnimation=wraith2_dying, trefferAnimation=wraith2_hurt), 
+            Gegner(None, "Fliegend", 1500, 300, 400, 1500, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt)
         ],
     }
     gegner_liste = gegner_pro_level[level_nr]
@@ -225,7 +228,7 @@ def kampf_starten(screen, level_nr, ist_boss):
 
         for g in gegner_liste:
             if g.go:
-                g.gegnerImage()
+                g.gegnerImage()    
 
         spieler.spielerImage()
 
