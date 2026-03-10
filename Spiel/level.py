@@ -3,9 +3,11 @@ import sys
 from Figur.spielfigur import Spielfigur
 from Gegner.gegner import Gegner
 
+# fenstergröße (wie überall)
 breite   = 1920
 hoehe    = 1080
 
+# farben
 schwarz = (0, 0, 0)
 weiss   = (255, 255, 255)
 rot     = (200, 50, 50)
@@ -21,14 +23,14 @@ class Plattform:
 
     def zeichnen(self, screen):
         pygame.draw.rect(screen, self.farbe, self.rect)
-        pygame.draw.rect(screen, schwarz, self.rect, 2)
+        pygame.draw.rect(screen, schwarz, self.rect, 2) # 2 für umrandung
 
 
 def kampf_starten(screen, level_nr, ist_boss):
-
     clock = pygame.time.Clock()
     font  = pygame.font.SysFont("arial",48, bold=True)
 
+    # jedes level - eigener boden_y
     boden_pro_level = {
         0: 690,
         1: 690,
@@ -72,7 +74,8 @@ def kampf_starten(screen, level_nr, ist_boss):
     wraith2_cast = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Casting Spells/Wraith_02_Casting Spells_{i:03d}.png") for i in range(0, 18)]
     wraith2_hurt = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Hurt/Wraith_02_Hurt_{i:03d}.png") for i in range(0, 12)]
     wraith2_dying = [pygame.image.load(f"Spiel/Gegner/PNG/Wraith2/PNG Sequences/Dying/Wraith_02_Dying_{i:03d}.png") for i in range(0, 15)]
-
+    
+    # hintergrund pro level, von claude nachgeschaut
     hintergrund_pfade = {
         0: "Spiel/Hintergründe/4/background.png",
         1: "Spiel/Hintergründe/4/background.png",
@@ -80,20 +83,23 @@ def kampf_starten(screen, level_nr, ist_boss):
         3: "Spiel/Hintergründe/4/background.png",
         4: "Spiel/Hintergründe/3/background.png",
     }
+    #hintergrund wieder auf vollbild skalieren (wie bei main.py)
     hintergrund = pygame.transform.scale(
         pygame.image.load(hintergrund_pfade[level_nr]).convert(),
         (breite, hoehe)
     )
 
+    #plattformen pro level 
     plattformen_pro_level = {
-        0: [],
+        0: [], # keine plattformen für level 1
         1: [Plattform(700, 550, 400, 25)],
         2: [Plattform(400, 550, 250, 25), Plattform(1100, 550, 250, 25)],
         3: [Plattform(300, 560, 200, 25), Plattform(750, 470, 200, 25)],
-        4: [],
+        4: [], # bosskampf - freie fläche
     }
     plattformen = plattformen_pro_level[level_nr]
 
+    # gegner pro level (mit allen nötigen daten) 
     gegner_pro_level = {
         0: [
             Gegner(None, "Nahkampf", 1800, 670, 100, 1850, 137, 290,
@@ -130,19 +136,20 @@ def kampf_starten(screen, level_nr, ist_boss):
             Gegner(None, "Fliegend", 1500, 300, 400, 1500, 237, 207, [1, 0, 0, 0], 3, 6, projektil="Spiel/Gegner/PNG/Demon/Sprites/projectile.png", angriffAnimation=demon_attack, FlugAnimation=demon_flying, totAnimation=demon_death, trefferAnimation=demon_hurt)
         ],
     }
-    gegner_liste = gegner_pro_level[level_nr]
+    gegner_liste = gegner_pro_level[level_nr] 
 
+    # screen muss nachträglich gesetzt werden, von claude nachgeschaut
     for g in gegner_liste:
         g.screen = screen
 
-    spieler     = Spielfigur(screen, 200, aktueller_boden, 320, 271, [0, 0, 1, 0], 10)
-    linke_wand  = pygame.Rect(0,    0, 2, hoehe)
-    rechte_wand = pygame.Rect(1918, 0, 2, hoehe)
+    spieler= Spielfigur(screen,200,aktueller_boden,320, 271,[0, 0, 1, 0],10)
+    linke_wand= pygame.Rect(0,0,2,hoehe) # unsichtbare wand links 
+    rechte_wand = pygame.Rect(1918,0,2,hoehe) # unsichtbare wand rechts 
 
     steht_auf_plattform = False  # merkt ob Spieler auf Plattform steht
 
     while True:
-
+        # events verarbeiten, wie bei main.py
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -151,74 +158,80 @@ def kampf_starten(screen, level_nr, ist_boss):
                 if event.key == pygame.K_ESCAPE:
                     return None
 
+        # get_pressed gibt zustand aller tasten zurück
         tasten = pygame.key.get_pressed()
 
+        #bewegung - colliderect prüft ob Spieler mit wand kollidiert, von claude nachgeschaut
         if tasten[pygame.K_a] and not spieler.hitbox.colliderect(linke_wand) and not spieler.dead:
             spieler.laufen([1, 0])
         elif tasten[pygame.K_d] and not spieler.hitbox.colliderect(rechte_wand) and not spieler.dead:
             spieler.laufen([0, 1])
         else:
             spieler.stehen()
-
+        # springen - nur wenn nicht schon im sprung und nicht tot
         if tasten[pygame.K_SPACE] and not spieler.sprung and not spieler.dead:
             spieler.startSprung()
             steht_auf_plattform = False
 
+        # schießen - max 3 kugeln gleichzeitig
         if tasten[pygame.K_f] and len(spieler.kugeln) <= 2:
             spieler.schiessen()
-            spieler.ok = False
+            spieler.ok = False # verhindert dass Spieler zu schnell schießen kann
         if not tasten[pygame.K_f]:
             spieler.ok = True
 
+        # kugeln bewegen & die aus screen fliegen entfernen, von claude nachgeschaut
         spieler.kugelverhalten()
 
         # Sprung-Update und Fallrichtung merken
+        # vorherige y-Position "merken", um zu wissen ob Spieler gerade fällt oder steigt
         vorheriges_y = spieler.y
         spieler.updateSprung()
-        faellt = spieler.y > vorheriges_y
+        faellt = spieler.y > vorheriges_y # true wenn spieler nach unten geht
 
-        # wenn sprung=False aber Spieler nicht auf Boden und nicht auf Plattform → fallen
+        # wenn sprung=False aber spieler z.B. in der luft soll er fallen
         if not spieler.sprung and spieler.y < aktueller_boden and not steht_auf_plattform:
-            spieler.sprung     = True
+            spieler.sprung = True
             spieler.sprungzahl = 0
 
-        # Boden
+        # Boden check
         if spieler.y >= aktueller_boden:
-            spieler.y           = aktueller_boden
-            spieler.sprung      = False
-            spieler.sprungzahl  = 13
+            spieler.y = aktueller_boden # auf boden setzen
+            spieler.sprung = False
+            spieler.sprungzahl = 13 # sprungzahl soll zurück für nächsten sprung
             steht_auf_plattform = False
 
-        # Plattformen
+        # plattformen check  
         else:
-            noch_drauf = False
+            noch_drauf = False # wird True wenn Spieler noch über einer plattfrom
             for p in plattformen:
-                spieler_mitte_x = spieler.x + spieler.breite // 2
-                fuesse          = spieler.y + spieler.hoehe
-                ueber_plattform = p.rect.left < spieler_mitte_x < p.rect.right
+                spieler_mitte_x = spieler.x + spieler.breite // 2 # mitte des spielers
+                fuesse = spieler.y + spieler.hoehe # y-position der füße
+                ueber_plattform = p.rect.left < spieler_mitte_x < p.rect.right # horizontal über plattform
 
-                # landen wenn Spieler fällt und Füße die Plattform kreuzen
+                # landen wenn Spieler fällt und Füße plattform kreuzen
+                # p.rect.bottom + 20 = etwas "toleranz" damit man nicht durchfällt
                 if faellt and ueber_plattform and p.rect.top <= fuesse <= p.rect.bottom + 20:
-                    spieler.y           = p.rect.y - spieler.hoehe
-                    spieler.sprung      = False
-                    spieler.sprungzahl  = 13
+                    spieler.y = p.rect.y - spieler.hoehe # genau auf Plattform setzen
+                    spieler.sprung = False
+                    spieler.sprungzahl = 13
                     steht_auf_plattform = True
-                    noch_drauf          = True
+                    noch_drauf= True
                     break
 
-                # bereits drauf – prüfen ob Spieler noch horizontal über der Plattform ist
+                # bereits drauf – prüfen ob figur noch horizontal über Plattform
                 if steht_auf_plattform and ueber_plattform:
                     noch_drauf = True
                     break
 
-            # seitlich runtergelaufen → fallen lassen
+            # seitlich runtergelaufen
             if steht_auf_plattform and not noch_drauf:
                 steht_auf_plattform = False
-                spieler.sprung      = True
-                spieler.sprungzahl  = 0
+                spieler.sprung= True
+                spieler.sprungzahl = 0 # sofort runterfallen, von claude nachgeschaut
 
         # Zeichnen
-        screen.blit(hintergrund, (0, 0))
+        screen.blit(hintergrund, (0, 0)) # hintergrund zuerst
 
         for p in plattformen:
             p.zeichnen(screen)
@@ -227,25 +240,27 @@ def kampf_starten(screen, level_nr, ist_boss):
             k.zeichnen()
 
         for g in gegner_liste:
-            if g.go:
+            if g.go: # go=False wenn tot-animation abgespielt  
                 g.gegnerImage()    
 
         spieler.spielerImage()
 
         for g in gegner_liste:
             if g.go and not g.dead:
-                g.Bewegungsregler()
-                g.bewegen(spieler)
-                spieler.trefferCheck(g)
-                g.kugelverhalten(spieler)
+                g.Bewegungsregler() # animation steuern
+                g.bewegen(spieler) # auf spieler zugehen
+                spieler.trefferCheck(g) # prüfen ob kugel gegner trifft 
+                g.kugelverhalten(spieler) # gegner-projektile bewegen
 
+        # Level-Text anzeigen
         level_text = font.render(f"Level {level_nr + 1}{'  –  BOSS!' if ist_boss else ''}", True, weiss)
         screen.blit(level_text, (20, 20))
 
+        # gewonnen - all() gibt True wenn alle gegner in liste tot snd
         if all(not g.go for g in gegner_liste):
             if ist_boss:
                 # Boss besiegt → großer End-Screen
-                screen.fill((0, 0, 0))
+                screen.fill((0, 0, 0)) # schwarzer hintergrund
 
                 # Meisterschale-Bild (meisterschale.jpg)
                 schale = pygame.image.load("Spiel/Hintergründe/meisterschale.jpg").convert_alpha()
@@ -267,12 +282,14 @@ def kampf_starten(screen, level_nr, ist_boss):
                 zeile2 = unter_font.render("Die Meisterschale ist zurück in Berlin!", True, weiss)
                 weiter = mini_font.render("[ Beliebige Taste drücken ]", True, grau)
 
+                # get_width()//2 zentriert den text horizontal auf screen, von claude nachgeschaut
                 screen.blit(titel,  (breite // 2 - titel.get_width()  // 2, 600))
                 screen.blit(zeile2, (breite // 2 - zeile2.get_width() // 2, 700))
                 screen.blit(weiter, (breite // 2 - weiter.get_width() // 2, 980))
 
-                pygame.display.flip()
+                pygame.display.flip() # screen anzeigen 
 
+                # warten bis spieler eine Taste drückt
                 warten = True
                 while warten:
                     for event in pygame.event.get():
@@ -282,15 +299,17 @@ def kampf_starten(screen, level_nr, ist_boss):
                         if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                             warten = False
             else:
+                # normales level geschafft, dann abdunkeln & text
                 dunkel = pygame.Surface((breite, hoehe), pygame.SRCALPHA)
-                dunkel.fill((0, 0, 0, 160))
+                dunkel.fill((0, 0, 0, 160)) # halbtransparent schwarz 
                 screen.blit(dunkel, (0, 0))
                 gewonnen_text = font.render("Level geschafft!", True, gold)
                 screen.blit(gewonnen_text, (breite // 2 - gewonnen_text.get_width() // 2, hoehe // 2))
                 pygame.display.flip()
-                pygame.time.wait(2000)
-            return True
+                pygame.time.wait(2000) # 2 sek warten dnan zurürck zur map
+            return True # True = gewonnen, also nächstes level auf map freischalten
 
+        # spieler.go wird False wenn tot-animation fertig 
         if not spieler.go:
             dunkel = pygame.Surface((breite, hoehe), pygame.SRCALPHA)
             dunkel.fill((0, 0, 0, 160))
@@ -299,7 +318,7 @@ def kampf_starten(screen, level_nr, ist_boss):
             screen.blit(verloren_text, (breite // 2 - verloren_text.get_width() // 2, hoehe // 2))
             pygame.display.flip()
             pygame.time.wait(2000)
-            return False
+            return False # verloren, also map bleibt auf gleichem level
 
         pygame.display.flip()
         clock.tick(60)

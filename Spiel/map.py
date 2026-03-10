@@ -99,23 +99,24 @@ class Fortschrittsmap:
         for i in range(len(self.level_liste) - 1):
             pos_a = self.level_liste[i].pos
             pos_b = self.level_liste[i + 1].pos
-            farbe = gruen if self.level_liste[i + 1].freigeschaltet else grau
-            pygame.draw.line(self.screen, farbe, pos_a, pos_b, 4)
+            farbe = gruen if self.level_liste[i + 1].freigeschaltet else grau # grün wenn nächstes level freigeschaltet, sonst grau
+            pygame.draw.line(self.screen, farbe, pos_a, pos_b, 4) # 4 = liniendicke
 
+        # enumerate für index und level gleichzeitig, von claude nachgeschaut
         for i, lv in enumerate(self.level_liste):
             lv.zeichnen(self.screen, self.font, ausgewaehlt=(self.ausgewaehlt == i))
 
-    # ein Klick startet direkt
     def klick_verarbeiten(self, maus_pos):
+        # prüft ob eines der level angeklickt wurde, von claude nachgeschaut
         for i, lv in enumerate(self.level_liste):
             if lv.wird_geklickt(maus_pos) and lv.freigeschaltet:
                 return i
         return None
 
-    # level abschliessen
     def level_abschliessen(self, index):
+        # markiert level als besucht & schaltet das nächste frei, von claude nachgeschaut
         self.level_liste[index].besucht = True
-        if index + 1 < len(self.level_liste):
+        if index + 1 < len(self.level_liste): # prüfen ob es ein nächstes level gibt
             self.level_liste[index + 1].freigeschaltet = True
 
 
@@ -124,6 +125,7 @@ def main(screen):
     clock = pygame.time.Clock()
     karte = Fortschrittsmap(screen)
     while True:
+        # events verarbeiten, wie bei main.py
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -132,7 +134,7 @@ def main(screen):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 geklicktes_level = karte.klick_verarbeiten(event.pos)
 
-                if geklicktes_level is not None:
+                if geklicktes_level is not None: # freigeschaltetes level wurde geklickt
                     lv = karte.level_liste[geklicktes_level]
 
                     # echten kampf aus level.py strarten
